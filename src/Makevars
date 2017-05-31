@@ -1,0 +1,27 @@
+OSFLAG :=
+MS :=
+ifeq ($(OS),Windows_NT)
+  OSFLAG = w
+  ifeq "$(WIN)" "64"
+    MS = 64
+  else
+    MS = 32
+  endif
+else
+  UNAME_S := $(shell uname -s)
+  ifeq ($(UNAME_S),Linux)
+    OSFLAG = l
+  endif
+  ifeq ($(UNAME_S),Darwin)
+    OSFLAG = m
+  endif
+  MS=$(shell getconf LONG_BIT)  # 32/64
+endif
+QARCH=$(OSFLAG)$(MS)
+
+PKG_CFLAGS=-DKXVER=3
+PKG_LIBS=$(addsuffix /c.o,$(QARCH))
+ifeq ($(OS),Windows_NT)
+PKG_LIBS += -lws2_32
+endif
+OBJECTS=qserver.o

@@ -1,0 +1,14 @@
+Package: qserver
+Version: 0.9.0
+Title: Native Connector to Kdb+
+Authors@R: c(
+  person("Sergey","Vidyuk",      role=c("aut","cre"), email="svidyuk@gmail.com")
+  )
+Depends: R (>= 3.0.0)
+Suggests: ggplot2 (>= 0.9.0)
+Description: This library provides a Q server to R.
+License: Kx license | file LICENSE
+URL: https://github.com/KxSystems/cookbook/tree/master/r/qserver
+BugReports: https://github.com/KxSystems/cookbook/issues
+MailingList: personal-kpdbplus@googlegroups.com
+RoxygenNote: 6.0.1
