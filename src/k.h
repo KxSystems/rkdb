@@ -8,8 +8,10 @@ extern"C"{
 #error "Set KXVER=3 for kdb+3.0 or standalone c-api after 2011-04-20. Otherwise set KXVER=2. e.g. #define KXVER 3 or gcc -DKXVER=3"
 #endif
 #if KXVER>=3
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
 typedef struct k0{signed char m,a,t;C u;I r;union{G g;H h;I i;J j;E e;F f;S s;struct k0*k;struct{J n;G G0[1];};};}*K;
+#pragma GCC diagnostic pop
 typedef struct{G g[16];}U;
 #define kU(x) ((U*)kG(x))
 #define xU ((U*)xG)
