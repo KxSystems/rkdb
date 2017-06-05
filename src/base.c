@@ -93,3 +93,17 @@ SEXP kx_r_execute(SEXP connection, SEXP query) {
   r0(result);
   return s;
 }
+
+static const
+R_CallMethodDef callMethods[] = {
+  {"kx_r_open_connection", (DL_FUNC) &kx_r_open_connection, -1},
+  {"kx_r_close_connection", (DL_FUNC) &kx_r_close_connection, -1},
+  {"kx_r_execute", (DL_FUNC) &kx_r_execute, -1},
+  {NULL, NULL, 0}
+};
+
+void R_init_qserver(DllInfo *info)
+{
+    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+    R_useDynamicSymbols(info, FALSE);
+}
