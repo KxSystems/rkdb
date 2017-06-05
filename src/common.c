@@ -210,7 +210,7 @@ static SEXP from_columns_kobject(K x) {
   K c;
   PROTECT(result= NEW_LIST(length));
   for(i= 0; i < length; i++) {
-    c= xK[i];
+    c= kK(x)[i];
     type= abs(c->t);
     if(type == KC)
       col= from_string_column_kobject(c);
@@ -238,7 +238,7 @@ static SEXP from_list_of_kobjects(K x) {
   int i, length= x->n;
   PROTECT(result= NEW_LIST(length));
   for(i= 0; i < length; i++) {
-    SET_VECTOR_ELT(result, i, from_any_kobject(xK[i]));
+    SET_VECTOR_ELT(result, i, from_any_kobject(kK(x)[i]));
   }
   UNPROTECT(1);
   return result;
@@ -256,7 +256,7 @@ static SEXP from_list_of_kobjects(K x) {
  * doubles respectively).
  */
 
-#define scalar(x) (x->t < 0)
+static I scalar(K x){return x->t < 0;}
 
 static SEXP from_bool_kobject(K x) {
   SEXP result;
@@ -303,9 +303,9 @@ static SEXP from_short_kobject(K x) {
     PROTECT(result= NEW_INTEGER(1));
     INTEGER_POINTER(result)[0]= (int) x->h;
   } else {
-    PROTECT(result= NEW_INTEGER(xn));
+    PROTECT(result= NEW_INTEGER(x->n));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= (int) xH[i];
+      INTEGER_POINTER(result)[i]= (int) kH(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -320,7 +320,7 @@ static SEXP from_int_kobject(K x) {
   } else {
     PROTECT(result= NEW_INTEGER(length));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= (int) xI[i];
+      INTEGER_POINTER(result)[i]= (int) kI(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -335,7 +335,7 @@ static SEXP from_long_kobject(K x) {
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= (double) xJ[i];
+      NUMERIC_POINTER(result)[i]= (double) kJ(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -350,7 +350,7 @@ static SEXP from_float_kobject(K x) {
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= (double) xE[i];
+      NUMERIC_POINTER(result)[i]= (double) kE(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -365,7 +365,7 @@ static SEXP from_double_kobject(K x) {
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= xF[i];
+      NUMERIC_POINTER(result)[i]= kF(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -379,7 +379,7 @@ static SEXP from_string_kobject(K x) {
     SET_STRING_ELT(result, 0, mkCharLen((S) &x->g, 1));
   } else {
     PROTECT(result= allocVector(STRSXP, 1));
-    SET_STRING_ELT(result, 0, mkCharLen((S) xG, length));
+    SET_STRING_ELT(result, 0, mkCharLen((S) kC(x), length));
   };
   UNPROTECT(1);
   return result;
@@ -401,11 +401,11 @@ static SEXP from_symbol_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_CHARACTER(1));
-    SET_STRING_ELT(result, 0, mkChar(xs));
+    SET_STRING_ELT(result, 0, mkChar(x->s));
   } else {
     PROTECT(result= NEW_CHARACTER(length));
     for(i= 0; i < length; i++)
-      SET_STRING_ELT(result, i, mkChar((S) xS[i]));
+      SET_STRING_ELT(result, i, mkChar(kS(x)[i]));
   }
   UNPROTECT(1);
   return result;
@@ -423,7 +423,7 @@ static SEXP from_date_kobject(K x) {
   } else {
     PROTECT(result= NEW_INTEGER(length));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= (int) xI[i] + 10957;
+      INTEGER_POINTER(result)[i]= kI(x)[i] + 10957;
   }
   dateclass= PROTECT(allocVector(STRSXP, 1));
   SET_STRING_ELT(dateclass, 0, mkChar("Date"));
@@ -462,7 +462,7 @@ static SEXP from_timespan_kobject(K x) {
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= xJ[i] / 1e9;
+      NUMERIC_POINTER(result)[i]= kJ(x)[i] / 1e9;
   }
   UNPROTECT(1);
   return result;
@@ -485,12 +485,12 @@ static SEXP from_timestamp_kobject(K x) {
 
 static SEXP from_dictionary_kobject(K x) {
   SEXP names, result;
-  K table;
+  K table,k=kK(x)[0],v=kK(x)[1];
 
   /* if keyed, try to create a simple table */
   /* ktd will free its argument if successful */
   /* if fails, x is still valid */
-  if(XT == xx->t && XT == xy->t) {
+  if(XT == k->t && XT == v->t) {
     r1(x);
     if((table= ktd(x))) {
       result= from_table_kobject(table);
@@ -500,8 +500,8 @@ static SEXP from_dictionary_kobject(K x) {
     r0(x);
   }
 
-  PROTECT(names= from_any_kobject(xx));
-  PROTECT(result= from_any_kobject(xy));
+  PROTECT(names= from_any_kobject(k));
+  PROTECT(result= from_any_kobject(v));
   SET_NAMES(result, names);
   UNPROTECT(2);
   return result;

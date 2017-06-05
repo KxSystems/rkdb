@@ -14,6 +14,7 @@
 #include <windows.h>
 #include <winbase.h>
 #endif
+#define KXVER 3
 #include "k.h"
 
 #include "common.c"

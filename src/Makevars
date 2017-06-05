@@ -19,7 +19,7 @@ else
 endif
 QARCH=$(OSFLAG)$(MS)
 
-PKG_CFLAGS=-DKXVER=3
+PKG_CFLAGS=-D_GNU_SOURCE
 PKG_LIBS=$(addsuffix /c.o,$(QARCH))
 ifeq ($(OS),Windows_NT)
 PKG_LIBS += -lws2_32
