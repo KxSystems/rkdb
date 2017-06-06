@@ -1,7 +1,7 @@
 #' Run simple series of tests for qserver
 #' Note: Start kdb+ instance on localhost:5000 before running this function
 #' @export
-test.qserver <- function() {
+test.rkdb <- function() {
   h=open_connection()   # default is localhost:5000
 
   execute (h,"sp:([]s:10?`3;p:10?`1;qty:100*10?10)")

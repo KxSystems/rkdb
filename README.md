@@ -9,13 +9,13 @@ See also [Kx wiki](http://code.kx.com/q/interfaces/with-r/).
 Using `devtools` package
 
 ```
-devtools::install_github('kxsystems/qserver')
+devtools::install_github('kxsystems/rkdb')
 ```
 
 To test, assuming a local q instance listening on port `5000`, try in R:
 ```
-> library(qserver)
-> test.qserver()
+> library(rkdb)
+> test.rkdb()
 ```
 ## API
 
@@ -28,6 +28,6 @@ Note that open_connection takes 3 arguments with defaults of `host='localhost'`,
 
 
 ## Want to contribute?
-- Prepare qserver to be published to CRAN
+- Prepare rkdb to be published to CRAN
 - Pass R objects directly to execute
 - Any open issues or documentation improvements
