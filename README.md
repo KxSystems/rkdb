@@ -2,7 +2,7 @@
 
 Execute kdb+ queries from R for advanced high-performance analytics.
 
-See also [Kx wiki](http://code.kx.com/q/interfaces/with-r/).
+## See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
 
 ## Installation
 
