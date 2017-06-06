@@ -24,4 +24,4 @@ PKG_LIBS=$(addsuffix /c.o,$(QARCH))
 ifeq ($(OS),Windows_NT)
 PKG_LIBS += -lws2_32
 endif
-OBJECTS=qserver.o
+OBJECTS=rkdb.o

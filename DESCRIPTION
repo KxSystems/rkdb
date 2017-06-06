@@ -1,6 +1,7 @@
-Package: qserver
+Package: rkdb
 Version: 0.9.0
-Title: R client for kdb+
+Title: R Client for 'kdb+'
+Description: 'kdb+' driver and interface for R. Connect and execute queries against 'kdb+' database and analytics platform from 'Kx Systems'(<https://kx.com>).
 Authors@R: c(
   person("Sergey","Vidyuk",      role=c("aut","cre"), email="svidyuk@gmail.com"),
   person("Chris","Burke", role=c("ctb")),
@@ -9,10 +10,9 @@ Authors@R: c(
   )
 Depends: R (>= 3.0.0)
 Suggests: ggplot2 (>= 0.9.0)
-Description: Execute kdb+ queries from R for advanced high-performance analytics.
-License: file LICENSE
-URL: https://github.com/KxSystems/qserver
-BugReports: https://github.com/KxSystems/qserver/issues
+License: Apache License 2.0 | file LICENSE
+URL: https://github.com/KxSystems/rkdb
+BugReports: https://github.com/KxSystems/rkdb/issues
 MailingList: personal-kpdbplus@googlegroups.com
 SystemRequirements: GNU make
 RoxygenNote: 6.0.1
