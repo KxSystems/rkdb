@@ -14,7 +14,7 @@ test.rkdb <- function() {
   print(s)
   print(execute(h,"b"))
   print(execute(h,"d"))
-  print(execute(h, "raze", c(c(1,2,3), c(4,5), 6)))
+  print(execute(h, "raze", list(c(1,2,3), c(4,5,6))))
   
   close_connection(h)
 }
