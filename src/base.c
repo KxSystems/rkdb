@@ -75,21 +75,29 @@ SEXP kx_r_close_connection(SEXP connection) {
 /*
  * Execute a kdb+ query over the given connection.
  */
-SEXP kx_r_execute(SEXP connection, SEXP query) {
+SEXP kx_r_execute(SEXP connection, SEXP query)
+{
   K result;
   SEXP s;
-  kx_connection= INTEGER_VALUE(connection);
+  kx_connection = INTEGER_VALUE(connection);
 
-  result= k(kx_connection, (char *) CHARACTER_VALUE(query), (K) 0);
-  if(0 == result) {
+  result = k(kx_connection, (char*) CHARACTER_VALUE(query), (K)0);
+  if(kx_connection < 0){
+    PROTECT(s = NEW_INTEGER(1));
+    INTEGER_POINTER(s)[0] = 0;
+    UNPROTECT(1);
+    return s;   
+  }
+  if (0 == result) {
     error("Error: not connected to kdb+ server\n");
-  } else if(-128 == result->t) {
-    char *e= calloc(strlen(result->s) + 1, 1);
+  }
+  else if (-128 == result->t) {
+    char *e = calloc(strlen(result->s) + 1, 1);
     strcpy(e, result->s);
     r0(result);
     error("Error from kdb+: `%s\n", e);
   }
-  s= from_any_kobject(result);
+  s = from_any_kobject(result);
   r0(result);
   return s;
 }

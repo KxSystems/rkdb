@@ -27,8 +27,8 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
 #' execute(h,"til 10")
 #' execute(h,"dev 1000?0")
 #' }
-execute <- function(con, query) {
-  .Call("kx_r_execute", as.integer(con), query)
+execute <- function(connection, query) {
+  return(.Call("kx_r_execute", as.integer(connection), query))
 }
 
 #' Close connection to kdb+ instance.
