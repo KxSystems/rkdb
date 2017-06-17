@@ -29,6 +29,7 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
 #' execute(h,"dev 1000?0")
 #' execute(h, "+", 2, 5)
 #' }
+
 execute <- function(connection, query, ...) {
   .Call("kx_r_execute", as.integer(connection), query, list(...))
 }

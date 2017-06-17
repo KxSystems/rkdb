@@ -14,6 +14,6 @@
 #endif
 #define KXVER 3
 #include "k.h"
-
+#include "sexp2k.c"
 #include "common.c"
 #include "base.c"
