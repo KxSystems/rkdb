@@ -27,15 +27,8 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
 #' execute(h,"til 10")
 #' execute(h,"dev 1000?0")
 #' }
-execute <- function(connection, query,arg1=NULL,arg2=NULL,arg3=NULL,arg4=NULL,arg5=NULL,arg6=NULL,arg7=NULL) {
-  if(is.null(arg1)){ return(.Call("kx_r_execute0", as.integer(connection), query))}
-  if(is.null(arg2)){ return(.Call("kx_r_execute1", as.integer(connection), query,arg1))}
-  if(is.null(arg3)){ return(.Call("kx_r_execute2", as.integer(connection), query,arg1,arg2))}
-  if(is.null(arg4)){ return(.Call("kx_r_execute3", as.integer(connection), query,arg1,arg2,arg3))}
-  if(is.null(arg5)){ return(.Call("kx_r_execute4", as.integer(connection), query,arg1,arg2,arg3,arg4))}
-  if(is.null(arg6)){ return(.Call("kx_r_execute5", as.integer(connection), query,arg1,arg2,arg3,arg4,arg5))}
-  if(is.null(arg7)){ return(.Call("kx_r_execute6", as.integer(connection), query,arg1,arg2,arg3,arg4,arg5,arg6))}          
-  return( .Call("kx_r_execute7", as.integer(connection), query,arg1,arg2,arg3,arg4,arg5,arg6,arg7))
+execute <- function(connection, query) {
+  return(.Call("kx_r_execute", as.integer(connection), query))
 }
 
 #' Close connection to kdb+ instance.
