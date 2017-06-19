@@ -50,3 +50,11 @@ execute <- function(connection, query,arg1=NULL,arg2=NULL,arg3=NULL,arg4=NULL,ar
 close_connection <- function(con) {
 	.Call("kx_r_close_connection", as.integer(con))
 }
+
+# library(rkdb)
+# hdl=open_connection(port=4537)
+# tmp <- data.frame(a=c(1,2,3),b=c("a","b","b"))
+# class(tmp$b)
+# dict()
+# class(tmp)
+# execute(hdl,'{`tmp set x}',data.frame(a=c(1,2,3),b=c("a","b","b")))

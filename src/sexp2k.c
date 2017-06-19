@@ -26,9 +26,26 @@ ZK from_character_robject(SEXP);
 ZK from_vector_robject(SEXP);
 ZK from_raw_robject(SEXP sxp);
 ZK from_nyi_robject(S m,SEXP sxp);
+ZK from_frame_robject(SEXP sxp);
+ZK from_factor_robject(SEXP sxp);
+
+Rboolean isClass(const char* class_,SEXP s)
+{
+    SEXP klass;
+    int i;
+    if (OBJECT(s)) {
+	klass = getAttrib(s, R_ClassSymbol);
+	for (i = 0; i < length(klass); i++)
+	    if (!strcmp(CHAR(STRING_ELT(klass, i)), class_)) return TRUE;
+    }
+    return FALSE;
+}
+
 
 ZK from_any_robject(SEXP sxp)
 {
+	if(isClass("data.frame",sxp)){ return from_frame_robject(sxp); }
+	if(isClass("factor",sxp)){ return from_factor_robject(sxp); }
 	K result = 0;
 	int type = TYPEOF(sxp);
 	switch (type) {
@@ -55,10 +72,9 @@ ZK from_any_robject(SEXP sxp)
 	case EXTPTRSXP : return from_nyi_robject("external",sxp); break; 	/* external pointer */
 	case WEAKREFSXP : return error_broken_robject(sxp); break; 	/* weak reference */
 	case RAWSXP : return from_raw_robject(sxp); break; 		/* raw bytes */
-	case S4SXP : return from_nyi_robject("s4",sxp); break; 		/* S4 non-vector */
-
+	case S4SXP : return from_nyi_robject("s4",sxp);break; /* S4 non-vector */
 	case NEWSXP : return error_broken_robject(sxp); break;		/* fresh node created in new page */
-  case FREESXP : return error_broken_robject(sxp); break;		/* node released by GC */
+  	case FREESXP : return error_broken_robject(sxp); break;		/* node released by GC */
 	case FUNSXP : return from_nyi_robject("fun",sxp); break; 		/* Closure or Builtin */
 	}
 	return result;
@@ -101,6 +117,46 @@ ZK error_broken_robject(SEXP sxp)
 ZK from_nyi_robject(S marker, SEXP sxp){
 	return attR(kp((S)Rf_type2char(TYPEOF(sxp))),sxp);
 }
+
+ZK from_frame_robject(SEXP sxp){
+	// TODO: Convert to table
+	J length = LENGTH(sxp);
+	SEXP colNames = Rf_getAttrib(sxp, R_NamesSymbol);
+	SEXP rowValues = Rf_getAttrib(sxp, R_RowNamesSymbol);	
+	K kRowValues = from_any_robject(rowValues);
+
+	K x = ktn(0, length + 1),
+	  v = ktn(0, length + 1),
+	  tbl = ka(XT);
+	
+	kK(x)[0] = kRowValues; 
+	const char* colName0 = "row.names";
+	kK(v)[0] = ks((S)colName0);
+
+	for (J i = 0; i < length; i++) {
+		kK(x)[i+1] = from_any_robject(VECTOR_ELT(sxp, i));
+		const char* colName = CHAR(STRING_ELT(colNames, i));
+		kK(v)[i+1] = ks((S)colName);
+	}
+
+	// Why is this not working?
+	// K tbl = xT(xD(v,x));
+
+	tbl->k = xD(v,x);
+	return tbl;
+}
+
+ZK from_factor_robject(SEXP sxp){
+	J length = LENGTH(sxp);	
+	SEXP levels = Rf_asCharacterFactor(sxp);
+	K x = ktn(0, length);
+	for (J i = 0; i < length; i++) {
+		const char* sym = CHAR(STRING_ELT(levels, i));
+		kK(x)[i] = ks((S)sym);
+	}
+	return x;  
+}
+
 
 ZK from_raw_robject(SEXP sxp)
 {
