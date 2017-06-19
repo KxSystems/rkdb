@@ -179,7 +179,7 @@ static SEXP from_any_kobject(K x) {
   else if(XD == type)
     result= from_dictionary_kobject(x);
   else if(101 == type)
-    result = R_NilValue;
+    result= R_NilValue;
   else if(105 == type)
     result= from_int_kobject(ki(0));
   else if(type <= KT)
@@ -236,17 +236,18 @@ static SEXP error_broken_kobject(K broken) {
  * An R list from a K list object.
  */
 static SEXP from_list_of_kobjects(K x) {
-  SEXP result;K y;
-  int i, length= x->n,utype;
+  SEXP result;
+  K y;
+  int i, length= x->n, utype;
   PROTECT(result= NEW_LIST(length));
-  utype = length>0?kK(x)[0]->t:0;
+  utype= length > 0 ? kK(x)[0]->t : 0;
   for(i= 0; i < length; i++) {
-    y=kK(x)[i];
-    utype = utype==y->t?utype:0;
+    y= kK(x)[i];
+    utype= utype == y->t ? utype : 0;
     SET_VECTOR_ELT(result, i, from_any_kobject(y));
   }
   if(utype == KC) {
-    result = coerceVector(result, STRSXP);
+    result= coerceVector(result, STRSXP);
   }
   UNPROTECT(1);
   return result;
@@ -264,7 +265,7 @@ static SEXP from_list_of_kobjects(K x) {
  * doubles respectively).
  */
 
-static I scalar(K x){return x->t < 0;}
+static I scalar(K x) { return x->t < 0; }
 
 static SEXP from_bool_kobject(K x) {
   SEXP result;
@@ -493,7 +494,7 @@ static SEXP from_timestamp_kobject(K x) {
 
 static SEXP from_dictionary_kobject(K x) {
   SEXP names, result;
-  K table,k=kK(x)[0],v=kK(x)[1];
+  K table, k= kK(x)[0], v= kK(x)[1];
 
   /* if keyed, try to create a simple table */
   /* ktd will free its argument if successful */

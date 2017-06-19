@@ -1,4 +1,4 @@
-#' Run simple series of tests for qserver
+#' Run simple series of tests for rkdb
 #' Note: Start kdb+ instance on localhost:5000 before running this function
 #' @export
 test.rkdb <- function() {

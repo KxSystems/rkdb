@@ -76,54 +76,50 @@ SEXP kx_r_close_connection(SEXP connection) {
  * Execute a kdb+ query over the given connection.
  */
 SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
-    K result;
-    SEXP s;
-    char *query_str;
-    kx_connection = INTEGER_VALUE(connection);
-    size_t nargs = LENGTH(args);
+  K result;
+  SEXP s;
+  char *query_str;
+  kx_connection= INTEGER_VALUE(connection);
+  size_t nargs= LENGTH(args);
 
-    if (nargs > 8) {
-        error("Error: kdb+ functions take a maximum of 8 parameters");
-    }
-    if(TYPEOF(query) != STRSXP) {
-        error("Error: supplied query or function name must be a string");
-    }
-    query_str = (char*) CHARACTER_VALUE(query);
-    K kargs[8] = { (K)0 };
-    for (size_t i = 0; i < nargs; i++) {
-        kargs[i] = from_any_robject(VECTOR_ELT(args, i));
-    }
+  if(nargs > 8) {
+    error("Error: kdb+ functions take a maximum of 8 parameters");
+  }
+  if(TYPEOF(query) != STRSXP) {
+    error("Error: supplied query or function name must be a string");
+  }
+  query_str= (char *) CHARACTER_VALUE(query);
+  K kargs[8]= { (K) 0 };
+  for(size_t i= 0; i < nargs; i++) {
+    kargs[i]= from_any_robject(VECTOR_ELT(args, i));
+  }
 
-    result = k(kx_connection, query_str, kargs[0], kargs[1], kargs[2],
-                kargs[3], kargs[4], kargs[5], kargs[6], kargs[7], (K)0);
+  result= k(kx_connection, query_str, kargs[0], kargs[1], kargs[2], kargs[3],
+            kargs[4], kargs[5], kargs[6], kargs[7], (K) 0);
 
-    if (0 == result) {
-        error("Error: not connected to kdb+ server\n");
-    }
-    else if (kx_connection < 0) { //async IPC
-        return R_NilValue;
-    }
-    else if (-128 == result->t) {
-        char *e = calloc(strlen(result->s) + 1, 1);
-        strcpy(e, result->s);
-        r0(result);
-        error("Error from kdb+: `%s\n", e);
-    }
-    s = from_any_kobject(result);
+  if(0 == result) {
+    error("Error: not connected to kdb+ server\n");
+  } else if(kx_connection < 0) { // async IPC
+    return R_NilValue;
+  } else if(-128 == result->t) {
+    char *e= calloc(strlen(result->s) + 1, 1);
+    strcpy(e, result->s);
     r0(result);
-    return s;
+    error("Error from kdb+: `%s\n", e);
+  }
+  s= from_any_kobject(result);
+  r0(result);
+  return s;
 }
 
-static const
-R_CallMethodDef callMethods[] = {
-  {"kx_r_open_connection", (DL_FUNC) &kx_r_open_connection, -1},
-  {"kx_r_close_connection", (DL_FUNC) &kx_r_close_connection, -1},
-  {"kx_r_execute", (DL_FUNC) &kx_r_execute, -1},
-  {NULL, NULL, 0}
+static const R_CallMethodDef callMethods[]= {
+  { "kx_r_open_connection", (DL_FUNC) &kx_r_open_connection, -1 },
+  { "kx_r_close_connection", (DL_FUNC) &kx_r_close_connection, -1 },
+  { "kx_r_execute", (DL_FUNC) &kx_r_execute, -1 },
+  { NULL, NULL, 0 }
 };
 
-void R_init_qserver(DllInfo *info)
-{
-    R_registerRoutines(info, NULL, callMethods, NULL, NULL);
-    R_useDynamicSymbols(info, FALSE);
+void R_init_qserver(DllInfo *info) {
+  R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+  R_useDynamicSymbols(info, FALSE);
 }
