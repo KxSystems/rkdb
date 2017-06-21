@@ -139,7 +139,7 @@ ZK from_frame_robject(SEXP sxp){
 	}
 
 	// Why is this not working?
-	K tbl = xT(xD(v,x));
+	K tbl = xT(xD(v,k));
 
 	// tbl->k = xD(v,k);
 	return tbl;
