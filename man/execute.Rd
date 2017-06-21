@@ -2,24 +2,27 @@
 % Please edit documentation in R/rkdb.R
 \name{execute}
 \alias{execute}
-\title{Execute \code{query} using \code{con} connection to kdb+.}
+\title{Execute \code{query} using \code{connection} connection to kdb+.}
 \usage{
-execute(con, query)
+execute(connection, query, ...)
 }
 \arguments{
-\item{con}{Connection handle.}
+\item{connection}{Connection handle.}
 
 \item{query}{A string to send to kdb+.}
+
+\item{...}{Optional parameters to pass to function provided in query.}
 }
 \value{
 Result of execution.
 }
 \description{
-Execute \code{query} using \code{con} connection to kdb+.
+Execute \code{query} using \code{connection} connection to kdb+.
 }
 \examples{
 \dontrun{
 execute(h,"til 10")
 execute(h,"dev 1000?0")
+execute(h, "+", 2, 5)
 }
 }
