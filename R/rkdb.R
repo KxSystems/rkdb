@@ -16,19 +16,22 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
   h
 }
 
-#' Execute \code{query} using \code{con} connection to kdb+.
+#' Execute \code{query} using \code{connection} connection to kdb+.
 #'
-#' @param con Connection handle.
+#' @param connection Connection handle.
 #' @param query A string to send to kdb+.
+#' @param ... Optional parameters to pass to function provided in query.
 #' @return Result of execution.
 #' @export
 #' @examples
 #' \dontrun{
 #' execute(h,"til 10")
 #' execute(h,"dev 1000?0")
+#' execute(h, "+", 2, 5)
 #' }
-execute <- function(connection, query) {
-  return(.Call("kx_r_execute", as.integer(connection), query))
+
+execute <- function(connection, query, ...) {
+  .Call("kx_r_execute", as.integer(connection), query, list(...))
 }
 
 #' Close connection to kdb+ instance.
