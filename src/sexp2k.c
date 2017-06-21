@@ -1,13 +1,9 @@
 
-ZK rexec(int type, K x);
 ZK kintv(J len, int *val);
 ZK kinta(J len, int rank, int *shape, int *val);
 ZK kdoublev(J len, double *val);
 ZK kdoublea(J len, int rank, int *shape, double *val);
 ZK from_any_robject(SEXP sxp);
-
-__thread int ROPEN= 0; // initialise thread-local. Will fail in other threads.
-                       // Ideally need to check if on q main thread.
 
 /*
  * convert R SEXP into K object.
@@ -27,8 +23,28 @@ ZK from_character_robject(SEXP);
 ZK from_vector_robject(SEXP);
 ZK from_raw_robject(SEXP sxp);
 ZK from_nyi_robject(S m, SEXP sxp);
+ZK from_frame_robject(SEXP sxp);
+ZK from_factor_robject(SEXP sxp);
+
+Rboolean isClass(const char *class_, SEXP s) {
+  SEXP klass;
+  int i;
+  if(OBJECT(s)) {
+    klass= getAttrib(s, R_ClassSymbol);
+    for(i= 0; i < length(klass); i++)
+      if(!strcmp(CHAR(STRING_ELT(klass, i)), class_))
+        return TRUE;
+  }
+  return FALSE;
+}
 
 ZK from_any_robject(SEXP sxp) {
+  if(isClass("data.frame", sxp)) {
+    return from_frame_robject(sxp);
+  }
+  if(isClass("factor", sxp)) {
+    return from_factor_robject(sxp);
+  }
   K result= 0;
   int type= TYPEOF(sxp);
   switch(type) {
@@ -149,6 +165,39 @@ ZK error_broken_robject(SEXP sxp) { return krr("Broken R object."); }
 
 ZK from_nyi_robject(S marker, SEXP sxp) {
   return attR(kp((S) Rf_type2char(TYPEOF(sxp))), sxp);
+}
+
+ZK from_frame_robject(SEXP sxp) {
+  // TODO: Convert to table
+  J length= LENGTH(sxp);
+  SEXP colNames= Rf_getAttrib(sxp, R_NamesSymbol);
+  SEXP rowValues= Rf_getAttrib(sxp, R_RowNamesSymbol);
+  K kRowValues= from_any_robject(rowValues);
+
+  K k= ktn(KS, length + 1), v= ktn(0, length + 1);
+
+  kK(v)[0]= kRowValues;
+  kS(k)[0]= ss("row.names");
+
+  for(J i= 0; i < length; i++) {
+    kK(v)[i + 1]= from_any_robject(VECTOR_ELT(sxp, i));
+    const char *colName= CHAR(STRING_ELT(colNames, i));
+    kS(k)[i + 1]= ss((S) colName);
+  }
+
+  K tbl= xT(xD(k, v));
+  return tbl;
+}
+
+ZK from_factor_robject(SEXP sxp) {
+  J length= LENGTH(sxp);
+  SEXP levels= Rf_asCharacterFactor(sxp);
+  K x= ktn(KS, length);
+  for(J i= 0; i < length; i++) {
+    const char *sym= CHAR(STRING_ELT(levels, i));
+    kS(x)[i]= ss((S) sym);
+  }
+  return x;
 }
 
 ZK from_raw_robject(SEXP sxp) {
