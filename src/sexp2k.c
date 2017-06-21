@@ -125,31 +125,30 @@ ZK from_frame_robject(SEXP sxp){
 	SEXP rowValues = Rf_getAttrib(sxp, R_RowNamesSymbol);	
 	K kRowValues = from_any_robject(rowValues);
 
-	K x = ktn(0, length + 1),
+	K k = ktn(0, length + 1),
 	  v = ktn(0, length + 1),
 	  tbl = ka(XT);
 	
-	kK(x)[0] = kRowValues; 
-	const char* colName0 = "row.names";
-	kK(v)[0] = ks((S)colName0);
+	kK(k)[0] = kRowValues; 
+	kK(v)[0] = kS(k)[0]=ss("row.names");
 
 	for (J i = 0; i < length; i++) {
-		kK(x)[i+1] = from_any_robject(VECTOR_ELT(sxp, i));
+		kK(k)[i+1] = from_any_robject(VECTOR_ELT(sxp, i));
 		const char* colName = CHAR(STRING_ELT(colNames, i));
 		kK(v)[i+1] = ks((S)colName);
 	}
 
 	// Why is this not working?
-	// K tbl = xT(xD(v,x));
+	K tbl = xT(xD(v,x));
 
-	tbl->k = xD(v,x);
+	// tbl->k = xD(v,k);
 	return tbl;
 }
 
 ZK from_factor_robject(SEXP sxp){
 	J length = LENGTH(sxp);	
 	SEXP levels = Rf_asCharacterFactor(sxp);
-	K x = ktn(0, length);
+	K x = ktn(KS, length);
 	for (J i = 0; i < length; i++) {
 		const char* sym = CHAR(STRING_ELT(levels, i));
 		kK(x)[i] = ks((S)sym);
