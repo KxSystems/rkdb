@@ -9,7 +9,19 @@ params:
   port: 1234
 ---
 
-
+```{r hooks, include=FALSE}
+# add stringr
+if(! 'gsubfn' %in% rownames(installed.packages())) install.packages('gsubfn')
+library(gsubfn)
+default_source_hook <- knitr::knit_hooks$get('source')
+knitr::knit_hooks$set(source = function(x, options) {
+  x <- gsubfn(x = x, pattern = "params\\$`?([\\w_]+)`?", function(y) {
+    y <- get(y, params)
+    ifelse(is.character(y), paste0("'", y, "'"), y)
+  })
+  default_source_hook(x, options)
+})
+```
 
 # Installation
 ```{r install 1, echo=TRUE, message=FALSE, warning=FALSE}
@@ -26,8 +38,8 @@ library(rkdb)
 # First steps
 ## Open a q server and connect to it
 Open a qserver to test the installation
-```{r start kdb, echo=TRUE, results='asis'}
-cat(sprintf('# q -p %s', params$port))
+```{r start kdb, echo=TRUE, eval=FALSE}
+q -p params$port
 ```
 
 Open a connection to it
@@ -35,7 +47,7 @@ Open a connection to it
 h <- open_connection(params$server,params$port) #this open a connection
 ```
 
-First test:
+## Hello kdb
 ```{r test 1, echo=TRUE}
 execute(h, '1+1')
 ```

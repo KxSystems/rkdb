@@ -21,19 +21,17 @@ Open a q server and connect to it
 Open a qserver to test the installation
 
 ``` r
-cat(sprintf('# q -p %s', params$port))
-```
-
 q -p 1234
-=========
+```
 
 Open a connection to it
 
 ``` r
-h <- open_connection(params$server,params$port) #this open a connection
+h <- open_connection('localhost',1234) #this open a connection
 ```
 
-First test:
+Hello kdb
+---------
 
 ``` r
 execute(h, '1+1')
@@ -203,7 +201,7 @@ test(h, 'table', '([] x:`a`b;y:2?1.;z:2#2006.07.21T09:13:39;t:(1 2;3 4);u:("toto
 
     ## From kdb table type object ([] x:`a`b;y:2?1.;z:2#2006.07.21T09:13:39;t:(1 2;3 4);u:("toto";"tata")) comes back as :'data.frame': 2 obs. of  5 variables:
     ##  $ x: chr  "a" "b"
-    ##  $ y: num  0.471 0.635
+    ##  $ y: num  0.163 0.688
     ##  $ z: POSIXt, format: "2006-07-21 10:13:39" "2006-07-21 10:13:39"
     ##  $ t:List of 2
     ##   ..$ : num  1 2
@@ -216,7 +214,7 @@ test(h, '(keyed) table', '([x:`a`b`c]y:3?1.)')
 
     ## From kdb (keyed) table type object ([x:`a`b`c]y:3?1.) comes back as :'data.frame':   3 obs. of  2 variables:
     ##  $ x: chr  "a" "b" "c"
-    ##  $ y: num  0.967 0.231 0.95
+    ##  $ y: num  0.818 0.752 0.109
 
 ``` r
 test(h, 'dictionary', '`a`b!(10 12)')
