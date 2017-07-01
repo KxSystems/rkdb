@@ -104,9 +104,9 @@ execute(h, kdb)
 ```
 
     ##   x        y         z
-    ## 1 a 159.8164 0.2897004
-    ## 2 b 176.8400 0.2743548
-    ## 3 c 150.1049 0.3007687
+    ## 1 a 164.1950 0.2966137
+    ## 2 b 160.1403 0.2905813
+    ## 3 c 172.8703 0.2866500
 
 One can for instance use R graphical capabilities:
 
@@ -128,7 +128,7 @@ Getting data from R to kdb
 Evaluating kdb expressions using R objects
 ------------------------------------------
 
-You can call kdb functions on passed R objects
+You can call kdb functions on R objects, those will be passed/converted to the kdb side, and the kdb expression will be evaluated:
 
 ``` r
 execute(h, "raze", list(c(1,2,3), c(4,5,6)))
@@ -147,6 +147,8 @@ execute(h,'{`tmp set x}',data.frame(a=c(1,2,3),b=c("a","b","b")))
 ```
 
     ## [1] "tmp"
+
+As an example here is how you can use the left-join function on 2 data.frames:
 
 ``` r
 DF1 <- data.frame(x=c('x','x','y','y'), y=1:4)
