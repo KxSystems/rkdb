@@ -1,0 +1,141 @@
+---
+title: "RKDB README"
+author: 
+output:
+  md_document:
+    variant: markdown_github
+params:
+  server: localhost
+  port: 1234
+---
+
+```{r hooks, include=FALSE}
+# add stringr
+if(! 'gsubfn' %in% rownames(installed.packages())) install.packages('gsubfn')
+library(gsubfn)
+default_source_hook <- knitr::knit_hooks$get('source')
+knitr::knit_hooks$set(source = function(x, options) {
+  x <- gsubfn(x = x, pattern = "params\\$`?([\\w_]+)`?", function(y) {
+    y <- get(y, params)
+    ifelse(is.character(y), paste0("'", y, "'"), y)
+  })
+  default_source_hook(x, options)
+})
+```
+
+# Installation
+```{r install 1, echo=TRUE, message=FALSE, warning=FALSE}
+# remove old package
+if('qserver' %in% rownames(installed.packages())) remove.packages('qserver')
+# install devtools
+if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools')
+library(devtools)
+# install rkdb
+devtools::install_github('kxsystems/rkdb', quiet=TRUE)
+library(rkdb)
+```
+
+# First steps
+## Open a q server and connect to it
+Open a qserver to test the installation
+```{r start kdb, echo=TRUE, eval=FALSE}
+q -p params$port
+```
+
+Open a connection to it
+```{r open connection, echo=TRUE}
+h <- open_connection(params$server,params$port) #this open a connection
+```
+
+## Hello kdb
+
+You can evaluate any kdb expression and its result will come back to R:
+```{r abc 1, echo=TRUE}
+execute(h, '1+1')
+```
+
+Assigning a variable in q workspace also works:
+```{r abc 2, echo=TRUE}
+execute(h, 'x:1+1') #assign x hopefully to 2
+execute(h, 'x') # get back the value
+```
+
+# Getting data from kdb to R
+
+As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation.
+The conversions (from kdb to R, at time of writing) are: 
+
+```{r atoms 0, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
+cat("
+| kdb/q                       | r            |
+|-----------------------------|--------------|
+| boolean                     | logical      |
+| byte                        | integer      |
+| short                       | integer      |
+| int                         | integer      |
+| long                        | integer      |
+| real                        | numeric      |
+| float                       | numeric      |
+| char                        | character    |
+| symbol                      | character    |
+| timestamp                   | POSIXct      |
+| month                       | character    |
+| date                        | Date         |
+| datetime                    | POSIXct      |
+| timespan                    | character    |
+| minute                      | character    |
+| second                      | character    |
+| time                        | character    |
+| enumeration                 | factor       |
+| table                       | data.frame   |
+| keyed table                 | data.frame   |
+| dictionary (mixted types)   | named list   |
+| dictionary (same types)     | named vector |
+| function                    | character    |
+| list (same types)           | vector       | 
+| list (same 'complex' types) | list         | 
+| list (different types)      | list         | 
+")
+```
+
+## Computing on kdb
+
+rkdb provides a convienient way to retrieve computation done on the kdb side so you can have the best of both worlds:
+```{r kdb side example 1, echo=TRUE, warning=FALSE, message=FALSE}
+kdb <- '
+t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+select sum y, dev z by x from t
+'
+
+execute(h, kdb)
+```
+
+One can for instance use R graphical capabilities:
+```{r kdb side example 2, echo=TRUE, warning=FALSE, message=FALSE}
+kdb <- '
+t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+select y,z from t where x=`a
+'
+
+DF <- execute(h, kdb)
+plot(DF$y, DF$z, main='scatter plot', xlab='y values', ylab='z values')
+```
+
+# Getting data from R to kdb
+## Evaluating kdb expressions using R objects
+
+You can call kdb functions on R objects, those will be passed/converted to the kdb side, and the kdb expression will be evaluated:
+```{r use r obj 1, echo=TRUE}
+execute(h, "raze", list(c(1,2,3), c(4,5,6)))
+execute(h, "+", 2, 5)
+execute(h,'{`tmp set x}',data.frame(a=c(1,2,3),b=c("a","b","b")))
+```
+
+As an example here is how you can use the left-join function on 2 data.frames:
+```{r ex data.frame, echo=TRUE, warning=FALSE, message=FALSE}
+DF1 <- data.frame(x=c('x','x','y','y'), y=1:4)
+DF2 <- data.frame(x=c('x','y','z'), z=seq(10,30,10))
+execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
+```
+
+
