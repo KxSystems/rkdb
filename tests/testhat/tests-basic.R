@@ -81,19 +81,16 @@ test_that("kdb types to R types", {
   
 })
 
-## test R -> kdb
+# test R -> kdb
 test_that("R types to kdb types", {
 
 int <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~-6h;x~1i)}', 1L); expect_equal( int, c(okType=TRUE, okValue=TRUE) )
 intV <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~6h;x~(1 2))}', c(1L,2L)); expect_equal( intV, c(okType=TRUE, okValue=TRUE) )
 dbl <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~-6h;x~1.)}', 1.); expect_equal( dbl, c(okType=TRUE, okValue=TRUE) )
 dblV <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~9h;x~(1. 2.))}', c(1.,2.)); expect_equal( dblV, c(okType=TRUE, okValue=TRUE) )
-#execute(h, 'r2k', 'named vector', c(a=1.5,b=2.5))
-#execute(h, 'r2k', 'named list', list(a=1.5,b=2.5))
-#execute(h, 'r2k', 'unnamed list', list(1.5,2.5))
-#execute(h, 'r2k', 'Date', as.Date('2010-01-01'))
-#execute(h, 'r2k', 'Date vector', as.Date(c('2011-10-01','2011-01-01')))
-#execute(h, 'r2k', 'data.frame', data.frame(x=1:2, y=3:4))
-#execute(h, 'r2k', 'data.table', data.table(x=1:2, y=3:4))
+unamedL <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~9h;x~(1. 2.))}', list(1.,2.)); expect_equal( unamedL, c(okType=TRUE, okValue=TRUE) )
+unamedL2 <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~0h;x~(1.;"2"))}', list(1.,"2")); expect_equal( unamedL2, c(okType=TRUE, okValue=TRUE) )
+namedV <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~9h;x~((`a`b)!(1. 2.)))}', c(a=1.,b=2.)); expect_equal( namedV, c(okType=TRUE, okValue=TRUE) )
+namedL <- execute(h, '{[x] show("type is ",string[type[x]]); `tmp set x; :(`okType`okValue)!(type[x]~9h;x~((`a`b)!(1. 2.)))}', list(a=1.,b=2.)); expect_equal( namedL, c(okType=TRUE, okValue=TRUE) )
 
 })
