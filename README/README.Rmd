@@ -9,6 +9,12 @@ params:
   port: 1234
 ---
 
+## R client for kdb+
+
+Execute kdb+ queries from R for advanced high-performance analytics.
+
+## See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
+
 ```{r hooks, include=FALSE}
 # add stringr
 if(! 'gsubfn' %in% rownames(installed.packages())) install.packages('gsubfn')

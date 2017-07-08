@@ -1,3 +1,11 @@
+R client for kdb+
+-----------------
+
+Execute kdb+ queries from R for advanced high-performance analytics.
+
+See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
+-----------------------------------------------------------------------------
+
 Installation
 ============
 
@@ -104,9 +112,9 @@ execute(h, kdb)
 ```
 
     ##   x        y         z
-    ## 1 a 164.1950 0.2966137
-    ## 2 b 160.1403 0.2905813
-    ## 3 c 172.8703 0.2866500
+    ## 1 a 168.9242 0.2916370
+    ## 2 b 171.7659 0.2776207
+    ## 3 c 162.9535 0.2955354
 
 One can for instance use R graphical capabilities:
 

@@ -15,5 +15,5 @@ checkInstallAndLoad(c('knitr', 'rmarkdown'))
 # render to html
 # rmarkdown::render(input='./README/README.Rmd', output_format='html_document')
 # render to md (default)
-rmarkdown::render(input='./README/README.Rmd', output_file = './README.md', intermediates_dir = './README')
-
+rmarkdown::render(input='./README/README.Rmd', output_file = 'README.md', intermediates_dir = './README')
+if(file.exists('./README/README.md')) file.rename(from='./README/README.md', to='./README.md')
