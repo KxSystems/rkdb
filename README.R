@@ -13,10 +13,6 @@ checkInstallAndLoad <- function(packages){
 checkInstallAndLoad(c('knitr', 'rmarkdown'))
 
 # render to html
-# rmarkdown::render(input='./README/README.Rmd', output_format='html_document')
+# rmarkdown::render(input='./README.Rmd', output_format='html_document')
 # render to md (default)
-rmarkdown::render(input='./README/README.Rmd', output_file = 'README.md', intermediates_dir = './README')
-if(file.exists('./README/README.md')) {
-  if( file.exists('./README.md') ) file.remove('./README.md')
-  file.symlink(from='./README/README.md', to='./README.md')
-}
+rmarkdown::render(input='./README.Rmd', output_file = './README.md')
