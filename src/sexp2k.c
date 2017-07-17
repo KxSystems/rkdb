@@ -168,21 +168,14 @@ ZK from_nyi_robject(S marker, SEXP sxp) {
 }
 
 ZK from_frame_robject(SEXP sxp) {
-  // TODO: Convert to table
   J length= LENGTH(sxp);
   SEXP colNames= Rf_getAttrib(sxp, R_NamesSymbol);
-  SEXP rowValues= Rf_getAttrib(sxp, R_RowNamesSymbol);
-  K kRowValues= from_any_robject(rowValues);
-
-  K k= ktn(KS, length + 1), v= ktn(0, length + 1);
-
-  kK(v)[0]= kRowValues;
-  kS(k)[0]= ss("row.names");
-
+  
+  K k= ktn(KS, length), v= ktn(0, length);
   for(J i= 0; i < length; i++) {
-    kK(v)[i + 1]= from_any_robject(VECTOR_ELT(sxp, i));
+    kK(v)[i]= from_any_robject(VECTOR_ELT(sxp, i));
     const char *colName= CHAR(STRING_ELT(colNames, i));
-    kS(k)[i + 1]= ss((S) colName);
+    kS(k)[i]= ss((S) colName);
   }
 
   K tbl= xT(xD(k, v));

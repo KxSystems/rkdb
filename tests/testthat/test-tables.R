@@ -11,4 +11,6 @@ test_that("table shapes", {
       stringsAsFactors = FALSE
     )
   expect_equal(col3R, col3K)
+  col3K<-execute(h,"::",col3R)
+  expect_equal(col3R, col3K)
 })
