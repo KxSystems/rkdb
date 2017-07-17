@@ -12,7 +12,7 @@ ZK from_any_robject(SEXP);
 ZK error_broken_robject(SEXP);
 ZK from_null_robject(SEXP);
 ZK from_symbol_robject(SEXP);
-ZK from_pairlist_robject(SEXP);
+ZK dictpairlist(SEXP);
 ZK from_closure_robject(SEXP);
 ZK from_language_robject(SEXP);
 ZK from_char_robject(SEXP);
@@ -55,7 +55,7 @@ ZK from_any_robject(SEXP sxp) {
     return from_symbol_robject(sxp);
     break; /* symbols */
   case LISTSXP:
-    return from_pairlist_robject(sxp);
+    return dictpairlist(sxp);
     break; /* lists of dotted pairs */
   case CLOSXP:
     return from_closure_robject(sxp);
