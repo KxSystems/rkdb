@@ -5,4 +5,8 @@ test_that("dict conversions", {
   dictK <- execute(h, "`a`b!(1 2;1 2 3)")
   dictR <-list(a=c(1,2),b=c(1,2,3))
   expect_equal(dictR, dictK)
+  dictK <- execute(h,"::",dictR)
+  expect_equal(dictR,dictK)
+  dictK <- execute(h,"::",as.pairlist(dictR))
+  expect_equal(dictR,dictK)
 })
