@@ -116,10 +116,34 @@ void make_data_frame(SEXP data) {
 /* for datetime, timestamp */
 static void setdatetimeclass(SEXP sxp) {
   SEXP datetimeclass= PROTECT(allocVector(STRSXP, 2));
-  SET_STRING_ELT(datetimeclass, 0, mkChar("POSIXt"));
-  SET_STRING_ELT(datetimeclass, 1, mkChar("POSIXct"));
+  SET_STRING_ELT(datetimeclass, 0, mkChar("POSIXct"));
+  SET_STRING_ELT(datetimeclass, 1, mkChar("POSIXt"));
   setAttrib(sxp, R_ClassSymbol, datetimeclass);
   UNPROTECT(2);
+}
+
+
+static SEXP UnitsSymbol = NULL;
+
+
+/* for timespan, minute, second */
+SEXP setdifftimeclass(SEXP sxp, char* units) {
+  SEXP difftimeclass= PROTECT(allocVector(STRSXP, 1));
+  SET_STRING_ELT(difftimeclass, 0, mkChar("difftime"));
+  setAttrib(sxp, R_ClassSymbol, difftimeclass);
+  if (UnitsSymbol == NULL) UnitsSymbol = install("units");
+  setAttrib(sxp, UnitsSymbol, mkChar(units));
+  UNPROTECT(1);
+  return sxp;
+}
+
+/* for date,month */
+SEXP setdateclass(SEXP sxp) {
+  SEXP difftimeclass= PROTECT(allocVector(STRSXP, 1));
+  SET_STRING_ELT(difftimeclass, 0, mkChar("Date"));
+  setAttrib(sxp, R_ClassSymbol, difftimeclass);
+  UNPROTECT(1);
+  return sxp;
 }
 
 /*
@@ -420,7 +444,9 @@ static SEXP from_symbol_kobject(K x) {
   return result;
 }
 
-static SEXP from_month_kobject(K object) { return from_int_kobject(object); }
+static SEXP from_month_kobject(K object) { 
+  return from_int_kobject(object); 
+  }
 
 static SEXP from_date_kobject(K x) {
   SEXP result;
@@ -434,11 +460,8 @@ static SEXP from_date_kobject(K x) {
     for(i= 0; i < length; i++)
       INTEGER_POINTER(result)[i]= kI(x)[i] + 10957;
   }
-  dateclass= PROTECT(allocVector(STRSXP, 1));
-  SET_STRING_ELT(dateclass, 0, mkChar("Date"));
-  setAttrib(result, R_ClassSymbol, dateclass);
-  UNPROTECT(2);
-  return result;
+  UNPROTECT(1);
+  return setdateclass(result);
 }
 
 static SEXP from_datetime_kobject(K x) {
@@ -456,11 +479,17 @@ static SEXP from_datetime_kobject(K x) {
   return result;
 }
 
-static SEXP from_minute_kobject(K object) { return from_int_kobject(object); }
+static SEXP from_minute_kobject(K object) { 
+  return setdifftimeclass(from_int_kobject(object),"mins"); 
+  }
 
-static SEXP from_second_kobject(K object) { return from_int_kobject(object); }
+static SEXP from_second_kobject(K object) { 
+  return setdifftimeclass(from_int_kobject(object),"secs"); 
+  }
 
-static SEXP from_time_kobject(K object) { return from_int_kobject(object); }
+static SEXP from_time_kobject(K object) { 
+  return from_int_kobject(object); 
+  }
 
 static SEXP from_timespan_kobject(K x) {
   SEXP result;
@@ -474,7 +503,7 @@ static SEXP from_timespan_kobject(K x) {
       NUMERIC_POINTER(result)[i]= kJ(x)[i] / 1e9;
   }
   UNPROTECT(1);
-  return result;
+  return setdifftimeclass(result,"secs");
 }
 
 static SEXP from_timestamp_kobject(K x) {

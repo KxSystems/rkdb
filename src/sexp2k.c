@@ -9,10 +9,9 @@ ZK from_any_robject(SEXP sxp);
  * convert R SEXP into K object.
  */
 ZK from_any_robject(SEXP);
-ZK error_broken_robject(SEXP);
 ZK from_null_robject(SEXP);
 ZK from_symbol_robject(SEXP);
-ZK from_pairlist_robject(SEXP);
+ZK dictpairlist(SEXP);
 ZK from_closure_robject(SEXP);
 ZK from_language_robject(SEXP);
 ZK from_char_robject(SEXP);
@@ -55,7 +54,7 @@ ZK from_any_robject(SEXP sxp) {
     return from_symbol_robject(sxp);
     break; /* symbols */
   case LISTSXP:
-    return from_pairlist_robject(sxp);
+    return dictpairlist(sxp);
     break; /* lists of dotted pairs */
   case CLOSXP:
     return from_closure_robject(sxp);
@@ -97,7 +96,7 @@ ZK from_any_robject(SEXP sxp) {
     return from_nyi_robject("dot", sxp);
     break; /* dot-dot-dot object */
   case ANYSXP:
-    return error_broken_robject(sxp);
+    return from_nyi_robject("any",sxp);
     break; /* make "any" args work */
   case VECSXP:
     return from_vector_robject(sxp);
@@ -112,7 +111,7 @@ ZK from_any_robject(SEXP sxp) {
     return from_nyi_robject("external", sxp);
     break; /* external pointer */
   case WEAKREFSXP:
-    return error_broken_robject(sxp);
+    return from_nyi_robject("weakref",sxp);
     break; /* weak reference */
   case RAWSXP:
     return from_raw_robject(sxp);
@@ -120,12 +119,11 @@ ZK from_any_robject(SEXP sxp) {
   case S4SXP:
     return from_nyi_robject("s4", sxp);
     break; /* S4 non-vector */
-
   case NEWSXP:
-    return error_broken_robject(sxp);
+    return from_nyi_robject("newpage",sxp);
     break; /* fresh node created in new page */
   case FREESXP:
-    return error_broken_robject(sxp);
+    return from_nyi_robject("gc",sxp);
     break; /* node released by GC */
   case FUNSXP:
     return from_nyi_robject("fun", sxp);
@@ -161,28 +159,19 @@ ZK attR(K x, SEXP sxp) {
   return addattR(x, att);
 }
 
-ZK error_broken_robject(SEXP sxp) { return krr("Broken R object."); }
-
 ZK from_nyi_robject(S marker, SEXP sxp) {
   return attR(kp((S) Rf_type2char(TYPEOF(sxp))), sxp);
 }
 
 ZK from_frame_robject(SEXP sxp) {
-  // TODO: Convert to table
   J length= LENGTH(sxp);
   SEXP colNames= Rf_getAttrib(sxp, R_NamesSymbol);
-  SEXP rowValues= Rf_getAttrib(sxp, R_RowNamesSymbol);
-  K kRowValues= from_any_robject(rowValues);
-
-  K k= ktn(KS, length + 1), v= ktn(0, length + 1);
-
-  kK(v)[0]= kRowValues;
-  kS(k)[0]= ss("row.names");
-
+  
+  K k= ktn(KS, length), v= ktn(0, length);
   for(J i= 0; i < length; i++) {
-    kK(v)[i + 1]= from_any_robject(VECTOR_ELT(sxp, i));
+    kK(v)[i]= from_any_robject(VECTOR_ELT(sxp, i));
     const char *colName= CHAR(STRING_ELT(colNames, i));
-    kS(k)[i + 1]= ss((S) colName);
+    kS(k)[i]= ss((S) colName);
   }
 
   K tbl= xT(xD(k, v));
@@ -214,17 +203,6 @@ ZK from_null_robject(SEXP sxp) { return knk(0); }
 ZK from_symbol_robject(SEXP sxp) {
   const char *t= CHAR(PRINTNAME(sxp));
   K x= ks((S) t);
-  return attR(x, sxp);
-}
-
-ZK from_pairlist_robject(SEXP sxp) {
-  K x= ktn(0, 2 * length(sxp));
-  SEXP s= sxp;
-  for(J i= 0; i < x->n; i+= 2) {
-    kK(x)[i]= from_any_robject(CAR(s));
-    kK(x)[i + 1]= from_any_robject(TAG(s));
-    s= CDR(s);
-  }
   return attR(x, sxp);
 }
 
@@ -329,7 +307,7 @@ ZK from_character_robject(SEXP sxp) {
   else {
     x= ktn(0, length);
     for(i= 0; i < length; i++) {
-      xK[i]= kp((char *) CHAR(STRING_ELT(sxp, i)));
+      kK(x)[i]= kp((char *) CHAR(STRING_ELT(sxp, i)));
     }
   }
   return attR(x, sxp);
@@ -339,7 +317,16 @@ ZK from_vector_robject(SEXP sxp) {
   J i, length= LENGTH(sxp);
   K x= ktn(0, length);
   for(i= 0; i < length; i++) {
-    xK[i]= from_any_robject(VECTOR_ELT(sxp, i));
+    kK(x)[i]= from_any_robject(VECTOR_ELT(sxp, i));
+  }
+  SEXP colNames= Rf_getAttrib(sxp, R_NamesSymbol);
+  if(length==LENGTH(colNames)){
+    K k= ktn(KS, length);
+    for(J i= 0; i < length; i++) {
+      const char *colName= CHAR(STRING_ELT(colNames, i));
+      kS(k)[i]= ss((S) colName);
+    }
+    return xD(k,x);
   }
   return attR(x, sxp);
 }
@@ -352,10 +339,10 @@ ZK from_vector_robject(SEXP sxp) {
 static char *getkstring(K x) {
   char *s= NULL;
   int len;
-  switch(xt) {
+  switch(x->t) {
   case -KC:
     s= calloc(2, 1);
-    s[0]= xg;
+    s[0]= x->g;
     break;
   case KC:
     s= calloc(1 + xn, 1);
