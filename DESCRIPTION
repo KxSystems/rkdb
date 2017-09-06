@@ -1,5 +1,5 @@
 Package: rkdb
-Version: 0.9.0
+Version: 0.10.0
 Title: R Client for 'kdb+'
 Description: A 'kdb+' driver and interface for R. Connect and execute queries against 'kdb+' database and analytics platform from 'Kx Systems'(<https://kx.com>).
 Authors@R: c(
