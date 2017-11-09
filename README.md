@@ -128,7 +128,7 @@ DF <- execute(h, kdb)
 plot(DF$y, DF$z, main='scatter plot', xlab='y values', ylab='z values')
 ```
 
-![](README_files/figure-markdown_github/kdb%20side%20example%202-1.png)
+![](doc/figures/example_2_1.png)
 
 Getting data from R to kdb
 ==========================

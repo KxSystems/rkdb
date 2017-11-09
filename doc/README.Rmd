@@ -117,7 +117,7 @@ execute(h, kdb)
 ```
 
 One can for instance use R graphical capabilities:
-```{r kdb side example 2, echo=TRUE, warning=FALSE, message=FALSE}
+```{example_2, echo=TRUE, warning=FALSE, message=FALSE}
 kdb <- '
 t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select y,z from t where x=`a
