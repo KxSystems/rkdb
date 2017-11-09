@@ -74,23 +74,23 @@ As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb us
 | byte                        | integer      |
 | short                       | integer      |
 | int                         | integer      |
-| long                        | integer      |
+| long                        | numeric      |
 | real                        | numeric      |
 | float                       | numeric      |
 | char                        | character    |
 | symbol                      | character    |
 | timestamp                   | POSIXct      |
-| month                       | character    |
+| month                       | integer      |
 | date                        | Date         |
 | datetime                    | POSIXct      |
 | timespan                    | character    |
-| minute                      | character    |
-| second                      | character    |
-| time                        | character    |
-| enumeration                 | factor       |
+| minute                      | difftime     |
+| second                      | difftime     |
+| time                        | difftime     |
+| enumeration                 | character    |
 | table                       | data.frame   |
 | keyed table                 | data.frame   |
-| dictionary (mixted types)   | named list   |
+| dictionary (mixed types)    | named list   |
 | dictionary (same types)     | named vector |
 | function                    | character    |
 | list (same types)           | vector       |
@@ -104,23 +104,23 @@ rkdb provides a convienient way to retrieve computation done on the kdb side so 
 
 ``` r
 kdb <- '
-t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select sum y, dev z by x from t
 '
 
 execute(h, kdb)
 ```
 
-    ##   x        y         z
-    ## 1 a 159.6322 0.2890229
-    ## 2 b 171.4287 0.2877502
-    ## 3 c 167.9865 0.2694818
+    ##   x    y        z
+    ## 1 a 1503 1.120709
+    ## 2 b 1497 1.116689
+    ## 3 c 1500 1.116689
 
 One can for instance use R graphical capabilities:
 
 ``` r
 kdb <- '
-t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select y,z from t where x=`a
 '
 
@@ -164,8 +164,8 @@ DF2 <- data.frame(x=c('x','y','z'), z=seq(10,30,10))
 execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
 ```
 
-    ##   row.names x y  z
-    ## 1         1 x 1 10
-    ## 2         1 x 2 10
-    ## 3         2 y 3 20
-    ## 4         2 y 4 20
+    ##   x y  z
+    ## 1 x 1 10
+    ## 2 x 2 10
+    ## 3 y 3 20
+    ## 4 y 4 20
