@@ -7,7 +7,7 @@
 execute(connection, query, ...)
 }
 \arguments{
-\item{connection}{Connection handle.}
+\item{connection}{Connection handle. handle>0 will perform sync requst, handle<0 async.}
 
 \item{query}{A string to send to kdb+.}
 
@@ -24,5 +24,6 @@ Execute \code{query} using \code{connection} connection to kdb+.
 execute(h,"til 10")
 execute(h,"dev 1000?0")
 execute(h, "+", 2, 5)
+execute(-h, "upd",as.name("trade"),list(c(as.name("AAPL")),1.35,100L))
 }
 }

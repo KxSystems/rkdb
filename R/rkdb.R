@@ -18,7 +18,7 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
 
 #' Execute \code{query} using \code{connection} connection to kdb+.
 #'
-#' @param connection Connection handle.
+#' @param connection Connection handle. handle>0 will perform sync requst, handle<0 async.
 #' @param query A string to send to kdb+.
 #' @param ... Optional parameters to pass to function provided in query.
 #' @return Result of execution.
@@ -28,6 +28,7 @@ open_connection <- function(host="localhost", port=5000, user=NULL) {
 #' execute(h,"til 10")
 #' execute(h,"dev 1000?0")
 #' execute(h, "+", 2, 5)
+#' execute(-h, "upd",as.name("trade"),list(c(as.name("AAPL")),1.35,100L))
 #' }
 
 execute <- function(connection, query, ...) {
