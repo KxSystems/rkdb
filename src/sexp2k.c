@@ -335,30 +335,6 @@ ZK from_vector_robject(SEXP sxp) {
  * various utilities
  */
 
-/* get k string or symbol name */
-static char *getkstring(K x) {
-  char *s= NULL;
-  int len;
-  switch(x->t) {
-  case -KC:
-    s= calloc(2, 1);
-    s[0]= x->g;
-    break;
-  case KC:
-    s= calloc(1 + xn, 1);
-    memcpy(s, xG, xn);
-    break;
-  case -KS:
-    len= 1 + strlen(xs);
-    s= calloc(len, 1);
-    memcpy(s, xs, len);
-    break;
-  default:
-    krr("invalid name");
-  }
-  return s;
-}
-
 /*
  * convert R arrays to K lists
  * done for int, double

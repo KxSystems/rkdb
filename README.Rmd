@@ -79,23 +79,23 @@ cat("
 | byte                        | integer      |
 | short                       | integer      |
 | int                         | integer      |
-| long                        | integer      |
+| long                        | numeric      |
 | real                        | numeric      |
 | float                       | numeric      |
 | char                        | character    |
 | symbol                      | character    |
 | timestamp                   | POSIXct      |
-| month                       | character    |
+| month                       | integer      |
 | date                        | Date         |
 | datetime                    | POSIXct      |
 | timespan                    | character    |
-| minute                      | character    |
-| second                      | character    |
-| time                        | character    |
-| enumeration                 | factor       |
+| minute                      | difftime     |
+| second                      | difftime     |
+| time                        | difftime     |
+| enumeration                 | character    |
 | table                       | data.frame   |
 | keyed table                 | data.frame   |
-| dictionary (mixted types)   | named list   |
+| dictionary (mixed types)    | named list   |
 | dictionary (same types)     | named vector |
 | function                    | character    |
 | list (same types)           | vector       | 
@@ -109,7 +109,7 @@ cat("
 rkdb provides a convienient way to retrieve computation done on the kdb side so you can have the best of both worlds:
 ```{r kdb side example 1, echo=TRUE, warning=FALSE, message=FALSE}
 kdb <- '
-t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select sum y, dev z by x from t
 '
 
@@ -119,7 +119,7 @@ execute(h, kdb)
 One can for instance use R graphical capabilities:
 ```{r kdb side example 2, echo=TRUE, warning=FALSE, message=FALSE}
 kdb <- '
-t: ([] x:1000?`a`b`c;y:1000?1.;z:1000?1.);
+t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select y,z from t where x=`a
 '
 
