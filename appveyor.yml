@@ -14,6 +14,16 @@ cache:
   - C:\RLibrary
 
 # Adapt as necessary starting from here
+environment:
+  global:
+    CRAN: http://cloud.r-project.org/
+    WARNINGS_ARE_ERRORS: 1
+    USE_RTOOLS: true
+    R_ARCH: x64
+    GCC_PATH: mingw_64
+# Default GCC_PATH appears to be gcc-4.6.3 which is now unsupported as from Rtools.exe v3.4
+    R_CHECK_ARGS: --no-manual
+# R_CHECK_ARGS specified in order to turn off --as-cran as that can be slow
 
 build_script:
   - travis-tool.sh install_deps
