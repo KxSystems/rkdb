@@ -15,4 +15,4 @@ checkInstallAndLoad(c('knitr', 'rmarkdown'))
 # render to html
 # rmarkdown::render(input='./README.Rmd', output_format='html_document')
 # render to md (default)
-rmarkdown::render(input='./README.Rmd', output_file = './README.md')
+rmarkdown::render(input='./README.Rmd', output_file = '../README.md')
