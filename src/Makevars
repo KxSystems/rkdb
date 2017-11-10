@@ -15,6 +15,9 @@ else
   ifeq ($(UNAME_S),Darwin)
     OSFLAG = m
   endif
+  ifeq ($(UNAME_S),MINGW)
+    OSFLAG = w
+  endif
   MS=$(shell getconf LONG_BIT)  # 32/64
 endif
 QARCH=$(OSFLAG)$(MS)

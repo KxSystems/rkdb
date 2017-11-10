@@ -450,7 +450,6 @@ static SEXP from_month_kobject(K object) {
 
 static SEXP from_date_kobject(K x) {
   SEXP result;
-  SEXP dateclass;
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
