@@ -123,7 +123,8 @@ static void setdatetimeclass(SEXP sxp) {
 }
 
 
-static SEXP UnitsSymbol = NULL;
+static SEXP R_UnitsSymbol = NULL;
+static SEXP R_TzSymbol = NULL;
 
 
 /* for timespan, minute, second */
@@ -131,12 +132,23 @@ SEXP setdifftimeclass(SEXP sxp, char* units) {
   SEXP difftimeclass= PROTECT(allocVector(STRSXP, 1));
   SET_STRING_ELT(difftimeclass, 0, mkChar("difftime"));
   setAttrib(sxp, R_ClassSymbol, difftimeclass);
-  if (UnitsSymbol == NULL) UnitsSymbol = install("units");
-  setAttrib(sxp, UnitsSymbol, mkChar(units));
-  UNPROTECT(1);
+  if (R_UnitsSymbol == NULL) R_UnitsSymbol = install("units");
+  SEXP difftimeunits= PROTECT(allocVector(STRSXP, 1));
+  SET_STRING_ELT(difftimeunits, 0, mkChar(units));
+  setAttrib(sxp, R_UnitsSymbol, difftimeunits);
+  UNPROTECT(2);
   return sxp;
 }
 
+/* for setting timezone */
+void settimezone(SEXP sxp, char* tzone) {
+  SEXP timezone= PROTECT(allocVector(STRSXP, 1));
+  SET_STRING_ELT(timezone, 0, mkChar(tzone));
+  if (R_TzSymbol == NULL) R_TzSymbol = install("tzone");
+  setAttrib(sxp, R_TzSymbol, timezone);
+  UNPROTECT(1);
+  //return sxp;
+}
 /* for date,month */
 SEXP setdateclass(SEXP sxp) {
   SEXP difftimeclass= PROTECT(allocVector(STRSXP, 1));
@@ -475,6 +487,7 @@ static SEXP from_datetime_kobject(K x) {
       NUMERIC_POINTER(result)[i]= (kF(x)[i] + 10957) * 86400;
   }
   setdatetimeclass(result);
+  settimezone(result,"GMT");
   return result;
 }
 
