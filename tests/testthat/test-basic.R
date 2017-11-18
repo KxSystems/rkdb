@@ -62,9 +62,11 @@ test_that("kdb types to R types", {
   expect_is(date, "Date")
   expect_equal(date, as.Date('2015-01-03'))
   
+  # we do not set the timezone attribute that is GMT on kdb unless explicitely set otherwise
   datetime <- testKdbToRType(h, '2006.07.21T09:13:39')
   expect_is(datetime, "POSIXt")
-  expect_equal(datetime, as.POSIXct('2006-07-21 09:13:39'))
+  rdatetime <- as.POSIXct('2006-07-21 09:13:39', tz='GMT')
+  expect_equal(datetime, rdatetime)
   
   timespan <- testKdbToRType(h, '12:00:00.000000000')
   expect_is(timespan, "difftime")
@@ -135,8 +137,7 @@ test_that("kdb types to R types", {
 # test R -> kdb
 test_that("R types to kdb types", {
   h <- skip_unless_has_test_db()
-  remoteCheckFunc <-
-    '`cc set {show"type is ",string type x;`tmp set x;`okType`okValue!(type[x]~y;x~z)}'
+  remoteCheckFunc <- '`cc set {show"type is ",string type x;`tmp set x;`okType`okValue!(type[x]~y;x~z)}'
   execute(h, remoteCheckFunc)
   int <- execute(h, 'cc[;6h;(),1i]', 1L)   # R doesn't have scalars
   expect_equal(int, c(okType = TRUE, okValue = TRUE))
@@ -152,8 +153,7 @@ test_that("R types to kdb types", {
   expect_equal(unamedL2, c(okType = TRUE, okValue = TRUE))
   namedVector <- execute(h, 'cc[;99h;`a`b!1 2f]', c(a = 1., b = 2.))
   expect_equal(namedVector, c(okType = TRUE, okValue = TRUE))
-  namedList <-
-    execute(h, 'cc[;99h;`a`b!((),1.;(),2.)]', list(a = 1., b = 2.))
+  namedList <- execute(h, 'cc[;99h;`a`b!((),1.;(),2.)]', list(a = 1., b = 2.))
   expect_equal(namedList, c(okType = TRUE, okValue = TRUE))
   
 })
