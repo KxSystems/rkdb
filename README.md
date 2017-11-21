@@ -17,6 +17,8 @@ if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools'
 library(devtools)
 # install rkdb
 devtools::install_github('kxsystems/rkdb', quiet=TRUE)
+# to install rkdb of perticular release
+# devtools::install_github('kxsystems/rkdb@0.10.0', quiet=TRUE)
 library(rkdb)
 ```
 
@@ -29,13 +31,13 @@ Open a q server and connect to it
 Open a qserver to test the installation
 
 ``` r
-q -p 1234
+q -p 5000
 ```
 
 Open a connection to it
 
 ``` r
-h <- open_connection('localhost',1234) #this open a connection
+h <- open_connection('localhost',5000) #this open a connection
 ```
 
 Hello kdb
@@ -128,7 +130,7 @@ DF <- execute(h, kdb)
 plot(DF$y, DF$z, main='scatter plot', xlab='y values', ylab='z values')
 ```
 
-![](doc/figures/example_2_1.png)
+![](doc/figures/example-1.png)
 
 Getting data from R to kdb
 ==========================
