@@ -6,8 +6,14 @@ output:
     variant: markdown_github
 params:
   server: localhost
-  port: 1234
+  port: 5000
 ---
+
+```{r opts, echo = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "figures/"
+)
+```
 
 ## R client for kdb+
 
@@ -38,6 +44,8 @@ if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools'
 library(devtools)
 # install rkdb
 devtools::install_github('kxsystems/rkdb', quiet=TRUE)
+# to install rkdb of perticular release
+# devtools::install_github('kxsystems/rkdb@0.10.0', quiet=TRUE)
 library(rkdb)
 ```
 
@@ -117,7 +125,7 @@ execute(h, kdb)
 ```
 
 One can for instance use R graphical capabilities:
-```{example_2, echo=TRUE, warning=FALSE, message=FALSE}
+```{r example, echo=TRUE, warning=FALSE, message=FALSE}
 kdb <- '
 t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
 select y,z from t where x=`a
