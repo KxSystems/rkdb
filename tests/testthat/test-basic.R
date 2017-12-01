@@ -131,7 +131,10 @@ test_that("kdb types to R types", {
   list3 <- testKdbToRType(h, '(1 2;3 4;4 5)')
   expect_is(list3, "list")
   expect_equal(list3, list(c(1, 2), c(3, 4), c(4, 5)))
-  
+
+  listattr <-testKdbToRType(h,'(`s#1 2;`u#3 4;`p#4 4 5 5;`g#1 1 1 3 4 5)')
+  expect_is(listattr, "list")
+  expect_equal(listattr,list(c(1,2),c(3,4),c(4,4,5,5),c(1,1,1,3,4,5)))
 })
 
 # test R -> kdb
