@@ -19,29 +19,28 @@ EXPORT SEXP kx_r_execute(SEXP c, SEXP, SEXP);
 /*
  * Open a connection to an existing kdb+ process.
  *
- * If we just have a host and port we call khp from the kdb+ interface.
+ * Defaults are passed from R level. Always 5 params.
  * If we have a host, port, "username:password" we call instead khpu.
  */
 SEXP kx_r_open_connection(SEXP whence) {
   SEXP result;
-  int connection, port;
-  char *host;
+  int connection, port, timeout;
+  char *host,*user;
   int length= GET_LENGTH(whence);
-  if(length < 2)
-    error("Can't connect with so few parameters..");
+  if(length != 5)
+    error("Expecting 5 parameters: host, port, user, timeout, tls. Got ",length);
 
-  port= INTEGER_POINTER(VECTOR_ELT(whence, 1))[0];
   host= (char *) CHARACTER_VALUE(VECTOR_ELT(whence, 0));
+  port= INTEGER_POINTER(VECTOR_ELT(whence, 1))[0];
+  user= (char *) CHARACTER_VALUE(VECTOR_ELT(whence, 2));
+  timeout= INTEGER_POINTER(VECTOR_ELT(whence, 3))[0];
 
-  if(2 == length)
-    connection= khp(host, port);
-  else {
-    char *user= (char *) CHARACTER_VALUE(VECTOR_ELT(whence, 2));
-    connection= khpu(host, port, user);
-  }
+  connection= khpun(host, port, user,timeout);
   if(!connection)
     error("Could not authenticate");
-  else if(connection < 0) {
+  else if(connection ==-2 )
+    error("Connection timed out");
+  else if(connection ==-1 ) {
 #ifdef WIN32
     char buf[256];
     FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),
