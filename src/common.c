@@ -346,11 +346,11 @@ static SEXP from_short_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
-    INTEGER_POINTER(result)[0]= (int) x->h;
+    INTEGER_POINTER(result)[0]= x->h==nh?NA_INTEGER:(int)x->h;
   } else {
     PROTECT(result= NEW_INTEGER(x->n));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= (int) kH(x)[i];
+      INTEGER_POINTER(result)[i]= kH(x)[i]==nh?NA_INTEGER:kH(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -361,11 +361,11 @@ static SEXP from_int_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
-    INTEGER_POINTER(result)[0]= x->i;
+    INTEGER_POINTER(result)[0]= x->i==ni?NA_INTEGER:x->i;
   } else {
     PROTECT(result= NEW_INTEGER(length));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= (int) kI(x)[i];
+      INTEGER_POINTER(result)[i]= kI(x)[i]==ni?NA_INTEGER:kI(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -376,11 +376,11 @@ static SEXP from_long_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= (double) x->j;
+    NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:(double)x->j;
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= (double) kJ(x)[i];
+      NUMERIC_POINTER(result)[i]= kJ(x)[i]==nj?R_NaN:(double)kJ(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -391,11 +391,11 @@ static SEXP from_float_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= (double) x->e;
+    NUMERIC_POINTER(result)[0]= ISNAN(x->e)?R_NaN:x->e;
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= (double) kE(x)[i];
+      NUMERIC_POINTER(result)[i]= (double) ISNAN(kE(x)[i])?R_NaN:kE(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -406,11 +406,11 @@ static SEXP from_double_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= x->f;
+    NUMERIC_POINTER(result)[0]= ISNAN(x->f)?R_NaN:x->f;
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= kF(x)[i];
+      NUMERIC_POINTER(result)[i]= ISNAN(kF(x)[i])?R_NaN:kF(x)[i];
   }
   UNPROTECT(1);
   return result;
@@ -465,11 +465,11 @@ static SEXP from_date_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
-    INTEGER_POINTER(result)[0]= x->i + 10957;
+    INTEGER_POINTER(result)[0]= x->i==ni?NA_INTEGER:(x->i + 10957);
   } else {
     PROTECT(result= NEW_INTEGER(length));
     for(i= 0; i < length; i++)
-      INTEGER_POINTER(result)[i]= kI(x)[i] + 10957;
+      INTEGER_POINTER(result)[i]= kI(x)[i]==ni?NA_INTEGER:(kI(x)[i] + 10957);
   }
   UNPROTECT(1);
   return setdateclass(result);
@@ -508,11 +508,11 @@ static SEXP from_timespan_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= x->j / 1e9;
+    NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:x->j/1e9;
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= kJ(x)[i] / 1e9;
+      NUMERIC_POINTER(result)[i]= kJ(x)[i]==nj?R_NaN:kJ(x)[i] / 1e9;
   }
   UNPROTECT(1);
   return setdifftimeclass(result,"secs");
@@ -523,11 +523,11 @@ static SEXP from_timestamp_kobject(K x) {
   int i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= 946684800 + x->j / 1e9;
+    NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:(946684800 + x->j / 1e9);
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= 946684800 + kJ(x)[i] / 1e9;
+      NUMERIC_POINTER(result)[i]= kJ(x)[i]==nj?R_NaN:(946684800 + kJ(x)[i] / 1e9);
   }
   setdatetimeclass(result);
   return result;
