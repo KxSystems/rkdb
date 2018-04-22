@@ -4,14 +4,19 @@
 \alias{open_connection}
 \title{Connect to kdb+ instance.}
 \usage{
-open_connection(host = "localhost", port = 5000, user = NULL)
+open_connection(host = "localhost", port = 5000, user = "", timeout = 0,
+  tls = FALSE)
 }
 \arguments{
-\item{host}{Hostname.}
+\item{host}{Hostname. For Unix Domain sockets pass '0.0.0.0'}
 
 \item{port}{Port number.}
 
 \item{user}{Username and password as user:password string}
+
+\item{timeout}{Number of milliseconds to wait for connection}
+
+\item{tls}{Wether or not to use secure connection. Alway false(unsupported).}
 }
 \value{
 Handle to kdb+ instance for \code{execute} and \code{close_connection}.
