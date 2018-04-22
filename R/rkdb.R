@@ -1,8 +1,10 @@
 #' Connect to kdb+ instance.
 #'
-#' @param host Hostname.
+#' @param host Hostname. For Unix Domain sockets pass '0.0.0.0'
 #' @param port Port number.
 #' @param user Username and password as user:password string
+#' @param timeout Number of milliseconds to wait for connection
+#' @param tls Wether or not to use secure connection. Alway false(unsupported).
 #' @return Handle to kdb+ instance for \code{execute} and \code{close_connection}.
 #' @export
 #' @examples
@@ -10,8 +12,8 @@
 #' h<-open_connection()
 #' h<-open_connection(port=5000)
 #' }
-open_connection <- function(host="localhost", port=5000, user=NULL) {
-  parameters <- list(host, as.integer(port), user)
+open_connection <- function(host="localhost", port=5000, user="", timeout = 0,  tls = FALSE) {
+  parameters <- list(host, as.integer(port), user, as.integer(timeout), as.logical(tls))
   h <- .Call("kx_r_open_connection", parameters)
   h
 }
