@@ -83,10 +83,10 @@ As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb us
 | month                       | integer      |
 | date                        | Date         |
 | datetime                    | POSIXct      |
-| timespan                    | character    |
+| timespan                    | difftime     |
 | minute                      | difftime     |
 | second                      | difftime     |
-| time                        | difftime     |
+| time                        | integer      |
 | enumeration                 | character    |
 | table                       | data.frame   |
 | keyed table                 | data.frame   |
