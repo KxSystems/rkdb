@@ -1,6 +1,6 @@
-library(subprocess)
 startq <- function(){
-  handle <- 0 # subprocess::spawn_process(file.path(Sys.getenv('QHOME'),"m64/q"), c("-p 5000"))
+  library(subprocess)
+  handle <- 0 #subprocess::spawn_process(file.path(Sys.getenv('QHOME'),"m64/q"), c("-p 5000"))
   print(handle)
   handle
 }
