@@ -79,10 +79,10 @@ test_that("kdb types to R types", {
   second <- testKdbToRType(h, '12:00:00')
   expect_is(second, "difftime")
   expect_equal(second, as.difftime(12*60*60,units = 'secs'))
-  
+
   time <- testKdbToRType(h, '12:00:00.000')
   expect_is(time, "POSIXt")
-  expect_equal(time, as.POSIXct('12:00:00.000','%H:%M:%S'))
+  expect_equal(time, as.POSIXct('12:00:00.000',format='%H:%M:%S'))
   
   
   enumeration <-
