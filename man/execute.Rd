@@ -7,11 +7,11 @@
 execute(connection, query, ...)
 }
 \arguments{
-\item{connection}{Connection handle. handle>0 will perform sync requst, handle<0 async.}
+\item{connection}{Connection handle. handle>0 will perform sync request, handle<0 async.}
 
 \item{query}{A string to send to kdb+.}
 
-\item{...}{Optional parameters to pass to function provided in query.}
+\item{...}{Optional parameters to pass to function provided in the query.}
 }
 \value{
 Result of execution.

@@ -4,7 +4,7 @@
 #' @param port Port number.
 #' @param user Username and password as user:password string
 #' @param timeout Number of milliseconds to wait for connection
-#' @param tls Wether or not to use secure connection. Alway false(unsupported).
+#' @param tls Whether or not to use secure connection. Alway false(unsupported).
 #' @return Handle to kdb+ instance for \code{execute} and \code{close_connection}.
 #' @export
 #' @examples
@@ -20,9 +20,9 @@ open_connection <- function(host="localhost", port=5000, user="", timeout = 0,  
 
 #' Execute \code{query} using \code{connection} connection to kdb+.
 #'
-#' @param connection Connection handle. handle>0 will perform sync requst, handle<0 async.
+#' @param connection Connection handle. handle>0 will perform sync request, handle<0 async.
 #' @param query A string to send to kdb+.
-#' @param ... Optional parameters to pass to function provided in query.
+#' @param ... Optional parameters to pass to function provided in the query.
 #' @return Result of execution.
 #' @export
 #' @examples
@@ -49,11 +49,3 @@ execute <- function(connection, query, ...) {
 close_connection <- function(con) {
 	.Call("kx_r_close_connection", as.integer(con))
 }
-
-# library(rkdb)
-# hdl=open_connection(port=4537)
-# tmp <- data.frame(a=c(1,2,3),b=c("a","b","b"))
-# class(tmp$b)
-# dict()
-# class(tmp)
-# execute(hdl,'{`tmp set x}',data.frame(a=c(1,2,3),b=c("a","b","b")))

@@ -44,7 +44,7 @@ if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools'
 library(devtools)
 # install rkdb
 devtools::install_github('kxsystems/rkdb', quiet=TRUE)
-# to install rkdb of perticular release
+# to install rkdb of particular release
 # devtools::install_github('kxsystems/rkdb@0.10.0', quiet=TRUE)
 library(rkdb)
 ```
@@ -58,7 +58,7 @@ q -p params$port
 
 Open a connection to it
 ```{r open connection, echo=TRUE}
-h <- open_connection(params$server,params$port) #this open a connection
+h <- open_connection(params$server,params$port) #this opens a connection
 ```
 
 ## Hello kdb
@@ -114,7 +114,7 @@ cat("
 
 ## Computing on kdb
 
-rkdb provides a convienient way to retrieve computation done on the kdb side so you can have the best of both worlds:
+rkdb provides a convenient way to retrieve computation done on the kdb side so you can have the best of both worlds:
 ```{r kdb side example 1, echo=TRUE, warning=FALSE, message=FALSE}
 kdb <- '
 t: ([] x:1000#`a`b`c;y:1000#1f*til 10;z:1000#1f*til 4);
@@ -138,7 +138,7 @@ plot(DF$y, DF$z, main='scatter plot', xlab='y values', ylab='z values')
 # Getting data from R to kdb
 ## Evaluating kdb expressions using R objects
 
-You can call kdb functions on R objects, those will be passed/converted to the kdb side, and the kdb expression will be evaluated:
+You can call kdb functions with R objects as arguments, those will be passed and converted to native kdb+ data types, and the kdb expression will be evaluated:
 ```{r use r obj 1, echo=TRUE}
 execute(h, "raze", list(c(1,2,3), c(4,5,6)))
 execute(h, "+", 2, 5)

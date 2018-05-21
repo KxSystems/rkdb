@@ -16,7 +16,7 @@ open_connection(host = "localhost", port = 5000, user = "", timeout = 0,
 
 \item{timeout}{Number of milliseconds to wait for connection}
 
-\item{tls}{Wether or not to use secure connection. Alway false(unsupported).}
+\item{tls}{Whether or not to use secure connection. Alway false(unsupported).}
 }
 \value{
 Handle to kdb+ instance for \code{execute} and \code{close_connection}.

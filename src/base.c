@@ -28,7 +28,7 @@ SEXP kx_r_open_connection(SEXP whence) {
   char *host,*user;
   int length= GET_LENGTH(whence);
   if(length != 5)
-    error("Expecting 5 parameters: host, port, user, timeout, tls. Got ",length);
+    error("Expecting 5 parameters: host, port, user, timeout, tls. Got %d.",length);
 
   host= (char *) CHARACTER_VALUE(VECTOR_ELT(whence, 0));
   port= INTEGER_POINTER(VECTOR_ELT(whence, 1))[0];
@@ -37,9 +37,9 @@ SEXP kx_r_open_connection(SEXP whence) {
 
   connection= khpun(host, port, user,timeout);
   if(!connection)
-    error("Could not authenticate");
+    error("Could not authenticate.");
   else if(connection ==-2 )
-    error("Connection timed out");
+    error("Connection timed out.");
   else if(connection ==-1 ) {
 #ifdef WIN32
     char buf[256];
@@ -82,10 +82,10 @@ SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
   size_t nargs= LENGTH(args);
 
   if(nargs > 8) {
-    error("Error: kdb+ functions take a maximum of 8 parameters");
+    error("kdb+ functions take a maximum of 8 parameters.");
   }
   if(TYPEOF(query) != STRSXP) {
-    error("Error: supplied query or function name must be a string");
+    error("Supplied query or function name must be a string.");
   }
   query_str= (char *) CHARACTER_VALUE(query);
   K kargs[8]= { (K) 0 };
@@ -97,14 +97,14 @@ SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
             kargs[4], kargs[5], kargs[6], kargs[7], (K) 0);
 
   if(0 == result) {
-    error("Error: not connected to kdb+ server\n");
+    error("Not connected to kdb+ server.");
   } else if(kx_connection < 0) { // async IPC
     return R_NilValue;
   } else if(-128 == result->t) {
     char *e= calloc(strlen(result->s) + 1, 1);
     strcpy(e, result->s);
     r0(result);
-    error("Error from kdb+: `%s\n", e);
+    error("kdb+ : %s.", e);
   }
   s= from_any_kobject(result);
   r0(result);
