@@ -44,7 +44,7 @@ const struct data_types r_data_types[]= { { "unknown", -1 },
  * eg. 	get_type_name(LISTSXP)
  */
 char *get_type_name(Sint type) {
-  int i;
+  J i;
   for(i= 1; r_data_types[i].name != 0; i++) {
     if(type == r_data_types[i].id)
       return r_data_types[i].name;
@@ -58,7 +58,7 @@ char *get_type_name(Sint type) {
 SEXP make_named_list(char **names, SEXPTYPE *types, Sint *lengths, Sint n) {
   SEXP output, output_names, object= NULL_USER_OBJECT;
   Sint elements;
-  int i;
+  J i;
 
   PROTECT(output= NEW_LIST(n));
   PROTECT(output_names= NEW_CHARACTER(n));
@@ -244,7 +244,7 @@ static SEXP from_any_kobject(K x) {
  */
 static SEXP from_columns_kobject(K x) {
   SEXP col, result;
-  int i, type, length= x->n;
+  J i, type, length= x->n;
   K c;
   PROTECT(result= NEW_LIST(length));
   for(i= 0; i < length; i++) {
@@ -274,7 +274,7 @@ static SEXP error_broken_kobject(K broken) {
 static SEXP from_list_of_kobjects(K x) {
   SEXP result;
   K y;
-  int i, length= x->n, utype;
+  J i, length= x->n, utype;
   PROTECT(result= NEW_LIST(length));
   utype= length > 0 ? kK(x)[0]->t : 0;
   for(i= 0; i < length; i++) {
@@ -305,7 +305,7 @@ static I scalar(K x) { return x->t < 0; }
 
 static SEXP from_bool_kobject(K x) {
   SEXP result;
-  int length= x->n;
+  J length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_LOGICAL(1));
     LOGICAL_POINTER(result)[0]= x->g;
@@ -321,7 +321,7 @@ static SEXP from_bool_kobject(K x) {
 
 static SEXP from_byte_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
     INTEGER_POINTER(result)[0]= (int) x->g;
@@ -343,7 +343,7 @@ static SEXP from_guid_kobject(K x) {
 
 static SEXP from_short_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
     INTEGER_POINTER(result)[0]= x->h==nh?NA_INTEGER:(int)x->h;
@@ -358,7 +358,7 @@ static SEXP from_short_kobject(K x) {
 
 static SEXP from_int_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
     INTEGER_POINTER(result)[0]= x->i==ni?NA_INTEGER:x->i;
@@ -373,7 +373,7 @@ static SEXP from_int_kobject(K x) {
 
 static SEXP from_long_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:(double)x->j;
@@ -388,7 +388,7 @@ static SEXP from_long_kobject(K x) {
 
 static SEXP from_float_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= ISNAN(x->e)?R_NaN:x->e;
@@ -403,7 +403,7 @@ static SEXP from_float_kobject(K x) {
 
 static SEXP from_double_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= ISNAN(x->f)?R_NaN:x->f;
@@ -418,7 +418,7 @@ static SEXP from_double_kobject(K x) {
 
 static SEXP from_string_kobject(K x) {
   SEXP result;
-  int length= x->n;
+  J length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_CHARACTER(1));
     SET_STRING_ELT(result, 0, mkCharLen((S) &x->g, 1));
@@ -432,7 +432,7 @@ static SEXP from_string_kobject(K x) {
 
 static SEXP from_string_column_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   PROTECT(result= NEW_CHARACTER(length));
   for(i= 0; i < length; i++) {
     SET_STRING_ELT(result, i, mkCharLen((S) &kC(x)[i], 1));
@@ -443,7 +443,7 @@ static SEXP from_string_column_kobject(K x) {
 
 static SEXP from_symbol_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_CHARACTER(1));
     SET_STRING_ELT(result, 0, mkChar(x->s));
@@ -462,7 +462,7 @@ static SEXP from_month_kobject(K object) {
 
 static SEXP from_date_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_INTEGER(1));
     INTEGER_POINTER(result)[0]= x->i==ni?NA_INTEGER:(x->i + 10957);
@@ -477,7 +477,7 @@ static SEXP from_date_kobject(K x) {
 
 static SEXP from_datetime_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J  i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= (x->f + 10957) * 86400;
@@ -505,7 +505,7 @@ static SEXP from_time_kobject(K object) {
 
 static SEXP from_timespan_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+   J i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:x->j/1e9;
@@ -520,7 +520,7 @@ static SEXP from_timespan_kobject(K x) {
 
 static SEXP from_timestamp_kobject(K x) {
   SEXP result;
-  int i, length= x->n;
+  J  i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
     NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:(946684800 + x->j / 1e9);
