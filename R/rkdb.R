@@ -4,13 +4,14 @@
 #' @param port Port number.
 #' @param user Username and password as user:password string
 #' @param timeout Number of milliseconds to wait for connection
-#' @param tls Whether or not to use secure connection. Alway false(unsupported).
+#' @param tls Whether or not to use secure connection.
 #' @return Handle to kdb+ instance for \code{execute} and \code{close_connection}.
 #' @export
 #' @examples
 #' \dontrun{
 #' h<-open_connection()
 #' h<-open_connection(port=5000)
+#' h<-open_connection(port=5000, tls=TRUE)
 #' }
 open_connection <- function(host="localhost", port=5000, user="", timeout = 0,  tls = FALSE) {
   parameters <- list(host, as.integer(port), user, as.integer(timeout), as.logical(tls))

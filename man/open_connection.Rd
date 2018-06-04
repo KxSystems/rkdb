@@ -16,7 +16,7 @@ open_connection(host = "localhost", port = 5000, user = "", timeout = 0,
 
 \item{timeout}{Number of milliseconds to wait for connection}
 
-\item{tls}{Whether or not to use secure connection. Alway false(unsupported).}
+\item{tls}{Whether or not to use secure connection.}
 }
 \value{
 Handle to kdb+ instance for \code{execute} and \code{close_connection}.
@@ -28,5 +28,6 @@ Connect to kdb+ instance.
 \dontrun{
 h<-open_connection()
 h<-open_connection(port=5000)
+h<-open_connection(port=5000, tls=TRUE)
 }
 }
