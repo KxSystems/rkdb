@@ -24,7 +24,7 @@ EXPORT SEXP kx_r_execute(SEXP c, SEXP, SEXP);
  */
 SEXP kx_r_open_connection(SEXP whence) {
   SEXP result;
-  int connection, port, timeout;
+  int connection, port, timeout,tls,cap;
   char *host,*user;
   int length= GET_LENGTH(whence);
   if(length != 5)
@@ -34,10 +34,13 @@ SEXP kx_r_open_connection(SEXP whence) {
   port= INTEGER_POINTER(VECTOR_ELT(whence, 1))[0];
   user= (char *) CHARACTER_VALUE(VECTOR_ELT(whence, 2));
   timeout= INTEGER_POINTER(VECTOR_ELT(whence, 3))[0];
-
-  connection= khpun(host, port, user,timeout);
+  tls= INTEGER_POINTER(VECTOR_ELT(whence, 4))[0];
+  cap = tls<<1|1;
+  connection= khpunc(host, port, user,timeout,cap);
   if(!connection)
     error("Could not authenticate.");
+  else if(connection == -3)
+    error("OpenSSL initialisation error.");
   else if(connection ==-2 )
     error("Connection timed out.");
   else if(connection ==-1 ) {
@@ -92,7 +95,6 @@ SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
   for(size_t i= 0; i < nargs; i++) {
     kargs[i]= from_any_robject(VECTOR_ELT(args, i));
   }
-
   result= k(kx_connection, query_str, kargs[0], kargs[1], kargs[2], kargs[3],
             kargs[4], kargs[5], kargs[6], kargs[7], (K) 0);
 
@@ -118,7 +120,7 @@ static const R_CallMethodDef callMethods[]= {
   { NULL, NULL, 0 }
 };
 
-void R_init_qserver(DllInfo *info) {
+void R_init_rkdb(DllInfo *info) {
   R_registerRoutines(info, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(info, FALSE);
 }

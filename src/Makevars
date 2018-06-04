@@ -25,7 +25,7 @@ endif
 QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
-PKG_LIBS=$(addsuffix /c.o,$(QARCH))
+PKG_LIBS=$(addsuffix /e.o,$(QARCH))
 ifeq ($(OSFLAG),w)
 PKG_LIBS += -lws2_32
 endif
