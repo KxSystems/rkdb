@@ -1,5 +1,5 @@
 Package: rkdb
-Version: 0.10.0
+Version: 0.12.0
 Title: R Client for 'kdb+'
 Description: A 'kdb+' driver and interface for R. Connect and execute queries against 'kdb+' database and analytics platform from 'Kx Systems'(<https://kx.com>).
 Authors@R: c(
@@ -9,7 +9,8 @@ Authors@R: c(
   person("Rory","Winston",role=c("ctb"))
   )
 Depends: R (>= 3.0.0)
-Suggests: ggplot2 (>= 0.9.0), testthat (>= 0.4), bit64, nanotime
+Imports: bit64, nanotime
+Suggests: ggplot2 (>= 0.9.0), testthat (>= 0.4)
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/KxSystems/rkdb
 BugReports: https://github.com/KxSystems/rkdb/issues

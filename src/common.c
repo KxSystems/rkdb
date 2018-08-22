@@ -518,16 +518,28 @@ static SEXP from_timespan_kobject(K x) {
   return setdifftimeclass(result,"secs");
 }
 
+static double q2r(long x) {
+  // offset is the number of seconds between the R and Q origins
+  const long   epoch_offset   = 10957l * 24l * 60l * 60l;
+  //  Number of nanoseconds in one second, both double and long integer
+  const double nanosec_double = 1.e9;
+  const long   nanosec_long = 1000000000l;
+  
+  long x_i = x / nanosec_long;         //  integer number of seconds
+  long x_f = x - ( nanosec_long * x_i );    //  integer number of nanoseconds
+  return((double) epoch_offset + ((double) x_i) + ( x_f / nanosec_double));
+}
+
 static SEXP from_timestamp_kobject(K x) {
   SEXP result;
   J  i, length= x->n;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:(946684800 + x->j / 1e9);
+    NUMERIC_POINTER(result)[0]= x->j==nj?R_NaN:q2r(x->j);
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= kJ(x)[i]==nj?R_NaN:(946684800 + kJ(x)[i] / 1e9);
+      NUMERIC_POINTER(result)[i]= kJ(x)[i]==nj?R_NaN:q2r(kJ(x)[i]);
   }
   setdatetimeclass(result);
   return result;
