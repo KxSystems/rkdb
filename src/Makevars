@@ -1,5 +1,6 @@
 OSFLAG :=
 MS :=
+
 ifeq ($(OS),Windows_NT)
   OSFLAG = w
   ifeq "$(WIN)" "64"
@@ -14,6 +15,9 @@ else
   endif
   ifeq ($(UNAME_S),Darwin)
     OSFLAG = m
+  endif
+  ifeq ($(UNAME_s),MSYS_NT-6.3-WOW)
+  	OSFLAF = w
   endif
   SUB_UNAME := $(findstring MINGW32, $(UNAME_S))
   $(info UNAME_S="$(UNAME_S)")
