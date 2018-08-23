@@ -17,7 +17,7 @@ else
     OSFLAG = m
   endif
   ifeq ($(UNAME_s),MSYS_NT-6.3-WOW)
-  	OSFLAF = w
+  	OSFLAG = w
   endif
   SUB_UNAME := $(findstring MINGW32, $(UNAME_S))
   $(info UNAME_S="$(UNAME_S)")
@@ -29,8 +29,9 @@ endif
 QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
-PKG_LIBS=$(addsuffix /e.o,$(QARCH))
 ifeq ($(OSFLAG),w)
-PKG_LIBS += -lws2_32
+PKG_LIBS=$(addsuffix /e_static.lib,$(QARCH)) -lws2_32
+else
+PKG_LIBS=$(addsuffix /e.o,$(QARCH))
 endif
 OBJECTS=rkdb.o
