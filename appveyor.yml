@@ -14,7 +14,10 @@ cache:
   - C:\RLibrary
 
 # Adapt as necessary starting from here
+platform: x64
+
 environment:
+  R_ARCH: x64
   global:
     CRAN: http://cloud.r-project.org/
     WARNINGS_ARE_ERRORS: 0
