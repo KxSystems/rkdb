@@ -10,10 +10,10 @@ Authors@R: c(
   )
 Depends: R (>= 3.0.0)
 Imports: bit64, nanotime
-Suggests: ggplot2 (>= 0.9.0), testthat (>= 0.4)
+Suggests: ggplot2 (>= 0.9.0), testthat (>= 0.4), subprocess
 License: Apache License 2.0 | file LICENSE
 URL: https://github.com/KxSystems/rkdb
 BugReports: https://github.com/KxSystems/rkdb/issues
 MailingList: personal-kpdbplus@googlegroups.com
 SystemRequirements: GNU make
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

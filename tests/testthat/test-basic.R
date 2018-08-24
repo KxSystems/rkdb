@@ -1,4 +1,5 @@
 context("basic")
+require(bit64)
 
 #' Helper to test kdb types are accurately converted to R types
 #'
@@ -18,8 +19,8 @@ test_that("kdb types to R types", {
   expect_true(bool)
   
   byte <- testKdbToRType(h, '0x26')
-  expect_is(byte, "integer")
-  expect_equal(byte, 38L)
+  expect_is(byte, "raw")
+  expect_equal(byte, as.raw(38L))
   
   short <- testKdbToRType(h, '42h')
   expect_is(short, "integer")
@@ -30,9 +31,8 @@ test_that("kdb types to R types", {
   expect_equal(int, 1L)
   
   long <- testKdbToRType(h, '42000j')
-  # kdb long is 8 bytes integer, R integer in 32 bytes integer
-  expect_is(long, "numeric")
-  expect_equal(long, 42000L)
+  expect_is(long, "integer64")
+  expect_equal(long, as.integer64(42000L))
   
   real <- testKdbToRType(h, '4.2e')
   expect_is(real, "numeric")
@@ -51,8 +51,8 @@ test_that("kdb types to R types", {
   expect_equal(symbol, 'a')
   
   timestamp <- testKdbToRType(h, '2015.01.01D00:01:00.000000000')
-  expect_is(timestamp, "POSIXt")
-  expect_equal(as.POSIXct(timestamp), as.POSIXct('2015-01-01 00:01:00.000000'))
+  expect_is(timestamp, "nanotime")
+  expect_equal(timestamp, nanotime("2015-01-01T00:01:00.000000000+00:00"))
   
   month <- testKdbToRType(h, '2015.01m')
   expect_is(month, "integer")
@@ -68,9 +68,9 @@ test_that("kdb types to R types", {
   rdatetime <- as.POSIXct('2006-07-21 09:13:39', tz='GMT')
   expect_equal(datetime, rdatetime)
   
-  timespan <- testKdbToRType(h, '12:00:00.000000000')
-  expect_is(timespan, "difftime")
-  expect_equal(timespan, as.difftime('12:00:00.000000000'))
+  timespan <- testKdbToRType(h, '0D12')
+  expect_is(timespan, "integer64")
+  expect_equal(timespan, as.integer64(43200000000000))
   
   minute <- testKdbToRType(h, '12:00')
   expect_is(minute, "difftime")
@@ -96,7 +96,7 @@ test_that("kdb types to R types", {
   expect_equivalent(table, data.frame(
     x = c('a', 'b'),
     y = c(1, 1),
-    t = I(list(c(1, 2), c(3, 4))),
+    t = I(list(as.integer64(c(1, 2)), as.integer64(c(3, 4)))),
     stringsAsFactors = F
   ))
   keyed_table <- testKdbToRType(h, '([x:`a`b];y:2#1.;t:(1 2;3 4))')
@@ -104,37 +104,40 @@ test_that("kdb types to R types", {
   expect_equivalent(keyed_table, data.frame(
     x = c('a', 'b'),
     y = c(1, 1),
-    t = I(list(c(1, 2), c(3, 4))),
+    t = I(list(as.integer64(c(1, 2)), as.integer64(c(3, 4)))),
     stringsAsFactors = F
   ))
   
   dictionary <- testKdbToRType(h, '`a`b!10 12')
-  expect_is(dictionary, "numeric")
-  expect_equal(dictionary, c(a = 10, b = 12))
+  expect_is(dictionary, "integer64")
+  expect_equal(dictionary, c(a = as.integer64(10), b = as.integer64(12)))
   
   dictionary2 <- testKdbToRType(h, '`a`b!(10;`toto)')
   expect_is(dictionary2, "list")
-  expect_equal(dictionary2, list(a = 10, b = 'toto'))
+  expect_equal(dictionary2, list(a = as.integer64(10), b = 'toto'))
   
   fonction <- testKdbToRType(h, '{[x] 2*x}')
   expect_is(fonction, "character")
   expect_equal(fonction, '{[x] 2*x}')
 
   list1 <- testKdbToRType(h, '1 2 3 4')
-  expect_is(list1, "numeric")
-  expect_equal(list1, c(1, 2, 3, 4))
+  expect_is(list1, "integer64")
+  expect_equal(list1, as.integer64(c(1, 2, 3, 4)))
   
   list2 <- testKdbToRType(h, '(1;"toto";`tata)')
   expect_is(list2, "list")
-  expect_equal(list2, list(1, 'toto', 'tata'))
+  expect_equal(list2, list(as.integer64(1), 'toto', 'tata'))
   
-  list3 <- testKdbToRType(h, '(1 2;3 4;4 5)')
+  list3 <- testKdbToRType(h, '(1 2i;3 4i;4 5i)')
   expect_is(list3, "list")
   expect_equal(list3, list(c(1, 2), c(3, 4), c(4, 5)))
 
-  listattr <-testKdbToRType(h,'(`s#1 2;`u#3 4;`p#4 4 5 5;`g#1 1 1 3 4 5)')
+  listattr <-testKdbToRType(h,'(`s#1 2;`u#3 4;`p#4 4 5 5;`g#1 1 1 3 4 5i)')
   expect_is(listattr, "list")
-  expect_equal(listattr,list(c(1,2),c(3,4),c(4,4,5,5),c(1,1,1,3,4,5)))
+  expect_equal(listattr,list(as.integer64(c(1,2)),
+                             as.integer64(c(3,4)),
+                             as.integer64(c(4,4,5,5)),
+                             c(1,1,1,3,4,5)))
   
   nulllist <-testKdbToRType(h,'first each upper[.Q.t except \" bgxcs\"]$\\:()')
   expect_true(all(is.na(nulllist)))

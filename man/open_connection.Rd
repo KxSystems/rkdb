@@ -4,8 +4,8 @@
 \alias{open_connection}
 \title{Connect to kdb+ instance.}
 \usage{
-open_connection(host = "localhost", port = 5000, user = "", timeout = 0,
-  tls = FALSE)
+open_connection(host = "localhost", port = 5000, user = "",
+  timeout = 0, tls = FALSE)
 }
 \arguments{
 \item{host}{Hostname. For Unix Domain sockets pass '0.0.0.0'}

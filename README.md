@@ -28,7 +28,7 @@ First steps
 Open a q server and connect to it
 ---------------------------------
 
-Open a qserver to test the installation
+Start kdb+ process to test the installation
 
 ``` r
 q -p 5000
@@ -37,7 +37,7 @@ q -p 5000
 Open a connection to it
 
 ``` r
-h <- open_connection('localhost',5000) #this open a connection
+h <- open_connection('localhost',5000)
 ```
 
 Hello kdb
@@ -54,7 +54,7 @@ execute(h, '1+1')
 Assigning a variable in q workspace also works:
 
 ``` r
-execute(h, 'x:1+1') #assign x hopefully to 2
+execute(h, 'x:1+1') #assign x to 2
 ```
 
     ## NULL
@@ -68,24 +68,24 @@ execute(h, 'x') # get back the value
 Getting data from kdb to R
 ==========================
 
-As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation. The conversions (from kdb to R, at time of writing) are:
+kdb+ uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation. The conversions (from kdb to R) are:
 
 | kdb/q                       | r            |
 |-----------------------------|--------------|
 | boolean                     | logical      |
-| byte                        | integer      |
+| byte                        | raw          |
 | short                       | integer      |
 | int                         | integer      |
-| long                        | numeric      |
+| long                        | integer64    |
 | real                        | numeric      |
 | float                       | numeric      |
 | char                        | character    |
 | symbol                      | character    |
-| timestamp                   | POSIXct      |
+| timestamp                   | nanotime     |
 | month                       | integer      |
 | date                        | Date         |
 | datetime                    | POSIXct      |
-| timespan                    | difftime     |
+| timespan                    | integer64    |
 | minute                      | difftime     |
 | second                      | difftime     |
 | time                        | integer      |
@@ -102,7 +102,7 @@ As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb us
 Computing on kdb
 ----------------
 
-rkdb provides a convienient way to retrieve computation done on the kdb side so you can have the best of both worlds:
+rkdb provides a convenient way to retrieve computation done on the kdb side so you can have the best of both worlds:
 
 ``` r
 kdb <- '

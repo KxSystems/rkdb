@@ -8,6 +8,7 @@
 
 #ifdef WIN32
 #define EXPORT __declspec(dllexport)
+extern void __chkstk(void){}
 #else
 #define EXPORT
 #endif
