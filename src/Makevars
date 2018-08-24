@@ -16,7 +16,7 @@ else
   ifeq ($(UNAME_S),Darwin)
     OSFLAG = m
   endif
-  ifeq ($(UNAME_s),MSYS_NT-6.3-WOW)
+  ifeq ($(UNAME_S),MSYS_NT-6.3-WOW)
   	OSFLAG = w
   endif
   SUB_UNAME := $(findstring MINGW32, $(UNAME_S))
