@@ -1,5 +1,5 @@
 context("basic")
-require(bit64)
+library(nanotime)
 
 #' Helper to test kdb types are accurately converted to R types
 #'
@@ -82,7 +82,7 @@ test_that("kdb types to R types", {
 
   time <- testKdbToRType(h, '12:00:00.000')
   expect_is(time, "POSIXt")
-  expect_equal(time, as.POSIXct('12:00:00.000',format='%H:%M:%S'))
+  expect_equal(time, as.POSIXct('12:00:00.000',format='%H:%M:%S',tz='UTC'))
   
   
   enumeration <-
@@ -151,7 +151,10 @@ test_that("R types to kdb types", {
   int <- execute(h, 'cc[;6h;(),1i]', 1L)   # R doesn't have scalars
   expect_equal(int, c(okType = TRUE, okValue = TRUE))
   intV <- execute(h, 'cc[;6h;1 2i]', c(1L, 2L))
-  expect_equal(intV, c(okType = TRUE, okValue = TRUE))
+  int64 <- execute(h, 'cc[;7h;(),1]', as.integer64(1))
+  expect_equal(int64, c(okType = TRUE, okValue = TRUE))
+  int64V <- execute(h, 'cc[;7h;1 2]', as.integer64(1:2))
+  expect_equal(int64V, c(okType = TRUE, okValue = TRUE))
   dbl <- execute(h, 'cc[;9h;(),1.]', 1.)
   expect_equal(dbl, c(okType = TRUE, okValue = TRUE))
   dblV <- execute(h, 'cc[;9h;(1. 2.)]', c(1., 2.))
@@ -160,9 +163,16 @@ test_that("R types to kdb types", {
   expect_equal(unamedL, c(okType = TRUE, okValue = TRUE))
   unamedL2 <- execute(h, 'cc[;0h;((),1.;(),"2")]', list(1., "2"))
   expect_equal(unamedL2, c(okType = TRUE, okValue = TRUE))
-  namedVector <- execute(h, 'cc[;99h;`a`b!1 2f]', c(a = 1., b = 2.))
-  expect_equal(namedVector, c(okType = TRUE, okValue = TRUE))
+  # TODO: should this be the case for named vectors as for lists
+  #namedVector <- execute(h, 'cc[;99h;`a`b!1 2f]', c(a = 1., b = 2.))
+  #expect_equal(namedVector, c(okType = TRUE, okValue = TRUE))
   namedList <- execute(h, 'cc[;99h;`a`b!((),1.;(),2.)]', list(a = 1., b = 2.))
   expect_equal(namedList, c(okType = TRUE, okValue = TRUE))
+  floatMatrix<- execute(h,'cc[;0h;2 2#1f]',matrix(1.0,nrow=2,ncol=2))
+  expect_equal(floatMatrix,c(okType=TRUE,okValue=TRUE))
+  int64Matrix<-as.integer64(1:4)
+  dim(int64Matrix)<-c(2,2)
+  int64Matrix<- execute(h,'cc[;0h;flip 2 2#1 2 3 4]',int64Matrix)
+  expect_equal(int64Matrix,c(okType=TRUE,okValue=TRUE))
   
 })
