@@ -478,13 +478,16 @@ static SEXP from_date_kobject(K x) {
 static SEXP from_datetime_kobject(K x) {
   SEXP result;
   int i, length= x->n;
+  const double offset_days = 10957.;
+  const double secperday = 24. * 60. * 60.;
+  const double offset_sec = secperday * offset_days;
   if(scalar(x)) {
     PROTECT(result= NEW_NUMERIC(1));
-    NUMERIC_POINTER(result)[0]= (x->f + 10957) * 86400;
+    NUMERIC_POINTER(result)[0]= (x->f * secperday) + offset_sec;
   } else {
     PROTECT(result= NEW_NUMERIC(length));
     for(i= 0; i < length; i++)
-      NUMERIC_POINTER(result)[i]= (kF(x)[i] + 10957) * 86400;
+      NUMERIC_POINTER(result)[i]= (kF(x)[i] * secperday) + offset_sec;
   }
   setdatetimeclass(result);
   settimezone(result,"GMT");
