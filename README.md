@@ -1,13 +1,11 @@
-R client for kdb+
------------------
+## R client for kdb+
 
-Execute kdb+ queries from R for advanced high-performance analytics.
+Execute kdb+ queries from R for advanced high-performance
+analytics.
 
-See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
------------------------------------------------------------------------------
+## See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
 
-Installation
-============
+# Installation
 
 ``` r
 # remove old package
@@ -17,16 +15,14 @@ if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools'
 library(devtools)
 # install rkdb
 devtools::install_github('kxsystems/rkdb', quiet=TRUE)
-# to install rkdb of perticular release
+# to install rkdb of particular release
 # devtools::install_github('kxsystems/rkdb@0.10.0', quiet=TRUE)
 library(rkdb)
 ```
 
-First steps
-===========
+# First steps
 
-Open a q server and connect to it
----------------------------------
+## Setting up a connection
 
 Start kdb+ process to test the installation
 
@@ -40,8 +36,7 @@ Open a connection to it
 h <- open_connection('localhost',5000)
 ```
 
-Hello kdb
----------
+## Hello kdb
 
 You can evaluate any kdb expression and its result will come back to R:
 
@@ -65,13 +60,14 @@ execute(h, 'x') # get back the value
 
     ## [1] 2
 
-Getting data from kdb to R
-==========================
+# Getting data from kdb to R
 
-kdb+ uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation. The conversions (from kdb to R) are:
+kdb+ uses some basic types that might not have a direct equivalent in R.
+Note also that this is not a bijective operation. The conversions (from
+kdb to R) are:
 
 | kdb/q                       | r            |
-|-----------------------------|--------------|
+| --------------------------- | ------------ |
 | boolean                     | logical      |
 | byte                        | raw          |
 | short                       | integer      |
@@ -96,13 +92,13 @@ kdb+ uses some basic types that might not have a direct equivalent in R. Note al
 | dictionary (same types)     | named vector |
 | function                    | character    |
 | list (same types)           | vector       |
-| list (same 'complex' types) | list         |
+| list (same ‘complex’ types) | list         |
 | list (different types)      | list         |
 
-Computing on kdb
-----------------
+## Computing on kdb
 
-rkdb provides a convenient way to retrieve computation done on the kdb side so you can have the best of both worlds:
+rkdb provides a convenient way to retrieve computation done on the kdb
+side so you can have the best of both worlds:
 
 ``` r
 kdb <- '
@@ -130,15 +126,15 @@ DF <- execute(h, kdb)
 plot(DF$y, DF$z, main='scatter plot', xlab='y values', ylab='z values')
 ```
 
-![](doc/figures/example-1.png)
+![](doc/figures/example-1.png)<!-- -->
 
-Getting data from R to kdb
-==========================
+# Getting data from R to kdb
 
-Evaluating kdb expressions using R objects
-------------------------------------------
+## Evaluating kdb expressions using R objects
 
-You can call kdb functions on R objects, those will be passed/converted to the kdb side, and the kdb expression will be evaluated:
+You can call kdb functions with R objects as arguments, those will be
+passed and converted to native kdb+ data types, and the kdb expression
+will be evaluated:
 
 ``` r
 execute(h, "raze", list(c(1,2,3), c(4,5,6)))
@@ -158,7 +154,8 @@ execute(h,'{`tmp set x}',data.frame(a=c(1,2,3),b=c("a","b","b")))
 
     ## [1] "tmp"
 
-As an example here is how you can use the left-join function on 2 data.frames:
+As an example here is how you can use the left-join function on 2
+data.frames:
 
 ``` r
 DF1 <- data.frame(x=c('x','x','y','y'), y=1:4)
