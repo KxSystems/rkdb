@@ -204,16 +204,12 @@ ZK from_char_robject(SEXP sxp) {
 ZK from_logical_robject(SEXP sxp) {
   K x;
   J len= XLENGTH(sxp);
-  int *s= malloc(len * sizeof(int));
-  DO(len, s[i]= LOGICAL(sxp)[i]);
-  SEXP dim= getAttrib(sxp, R_DimSymbol);
-  if(isNull(dim)) {
-    x= kintv(len, s);
-    free(s);
+  if(!isMatrix(sxp)) {
+    x= kintv(len, LOGICAL(sxp));
     return attR(x, sxp);
   }
-  x= kinta(len, length(dim), INTEGER(dim), s);
-  free(s);
+  SEXP dim= getAttrib(sxp, R_DimSymbol);
+  x= kinta(len, length(dim), INTEGER(dim), LOGICAL(sxp));
   SEXP dimnames= getAttrib(sxp, R_DimNamesSymbol);
   if(!isNull(dimnames))
     return attR(x, sxp);
@@ -228,16 +224,12 @@ ZK from_logical_robject(SEXP sxp) {
 ZK from_integer_robject(SEXP sxp) {
   K x;
   J len= XLENGTH(sxp);
-  int *s= malloc(len * sizeof(int));
-  DO(len, s[i]= INTEGER(sxp)[i]);
-  SEXP dim= getAttrib(sxp, R_DimSymbol);
-  if(isNull(dim)) {
-    x= kintv(len, s);
-    free(s);
+  if(!isMatrix(sxp)) {
+    x= kintv(len, INTEGER(sxp));
     return attR(x, sxp);
   }
-  x= kinta(len, length(dim), INTEGER(dim), s);
-  free(s);
+  SEXP dim= getAttrib(sxp, R_DimSymbol);
+  x= kinta(len, length(dim), INTEGER(dim), INTEGER(sxp));
   SEXP dimnames= getAttrib(sxp, R_DimNamesSymbol);
   if(!isNull(dimnames))
     return attR(x, sxp);
@@ -252,8 +244,7 @@ ZK from_integer_robject(SEXP sxp) {
 ZK from_double_robject(SEXP sxp) {
   K x;I nano,bit64=isClass("integer64",sxp);
   J len= XLENGTH(sxp);
-  SEXP dim= getAttrib(sxp, R_DimSymbol);
-  if(isNull(dim)) {
+  if(!isMatrix(sxp)) {
     nano = isClass("nanotime",sxp);
     if(nano || bit64) {
       x=ktn(nano?KP:KJ,len);
@@ -264,14 +255,12 @@ ZK from_double_robject(SEXP sxp) {
     x= kdoublev(len, REAL(sxp));
     return attR(x, sxp);  
   }
-  double *s= malloc(len * sizeof(double));
-  DO(len, s[i]= REAL(sxp)[i]);
+  SEXP dim= getAttrib(sxp, R_DimSymbol);
   if(bit64){
-    x= klonga(len, length(dim), INTEGER(dim), (J*)s);
+    x= klonga(len, length(dim), INTEGER(dim), (J*)REAL(sxp));
   }else{
-    x= kdoublea(len, length(dim), INTEGER(dim), s);
+    x= kdoublea(len, length(dim), INTEGER(dim), REAL(sxp));
   }
-  free(s);
   SEXP dimnames= getAttrib(sxp, R_DimNamesSymbol);
   if(!isNull(dimnames))
     return attR(x, sxp);
