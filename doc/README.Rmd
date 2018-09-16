@@ -3,7 +3,7 @@ title: "RKDB README"
 author: 
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
 params:
   server: localhost
   port: 5000
@@ -50,7 +50,7 @@ library(rkdb)
 ```
 
 # First steps
-## Open a q server and connect to it
+## Setting up a connection
 Start kdb+ process to test the installation
 ```{r start kdb, echo=TRUE, eval=FALSE}
 q -p params$port
@@ -98,7 +98,7 @@ cat("
 | timespan                    | integer64    |
 | minute                      | difftime     |
 | second                      | difftime     |
-| time                        | POSIXct      |
+| time                        | integer      |
 | enumeration                 | character    |
 | table                       | data.frame   |
 | keyed table                 | data.frame   |
