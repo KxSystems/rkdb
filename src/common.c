@@ -374,6 +374,7 @@ static SEXP from_second_kobject(K object) {
 
 static SEXP from_time_kobject(K object) { 
   SEXP raw= from_int_kobject(object);
+  /*
   SEXP t=PROTECT(allocVector(REALSXP,XLENGTH(raw)));
   for (J i = 0; i < XLENGTH(raw); ++i)
   {
@@ -381,7 +382,9 @@ static SEXP from_time_kobject(K object) {
   }
   UNPROTECT(1);
   setdatetimeclass(t);
-  return t; 
+  return t;
+  */
+  return raw; 
   }
 
 static SEXP from_timespan_kobject(K x) {
