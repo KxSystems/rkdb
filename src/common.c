@@ -358,7 +358,7 @@ static SEXP from_date_kobject(K x) {
 static SEXP from_datetime_kobject(K x) {
   SEXP result=from_double_kobject(x);
   for(J i= 0; i < XLENGTH(result); i++)
-    REAL(result)[i]= (REAL(result)[i] + 10957) * 86400;
+    REAL(result)[i]= REAL(result)[i]*86400. + 10957.* 86400.;
   setdatetimeclass(result);
   settimezone(result,"GMT");
   return result;
