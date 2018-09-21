@@ -249,7 +249,8 @@ ZK from_double_robject(SEXP sxp) {
     if(nano || bit64) {
       x=ktn(nano?KP:KJ,len);
       DO(len,kJ(x)[i]=INT64(sxp)[i])
-      if(nano)DO(len,kJ(x)[i]-=epoch_offset)
+      if(nano)
+        DO(len,if(kJ(x)[i]!=nj)kJ(x)[i]-=epoch_offset)
       return x;
     }
     x= kdoublev(len, REAL(sxp));

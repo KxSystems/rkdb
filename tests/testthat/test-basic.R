@@ -81,7 +81,7 @@ test_that("kdb types to R types", {
   expect_equal(second, as.difftime(12*60*60,units = 'secs'))
 
   time <- testKdbToRType(h, '12:00:00.000')
-  expect_is(time, "POSIXt")
+  expect_is(time, "integer")
   expect_equal(time, as.POSIXct('12:00:00.000',format='%H:%M:%S',tz='UTC'))
   
   
@@ -174,5 +174,8 @@ test_that("R types to kdb types", {
   dim(int64Matrix)<-c(2,2)
   int64Matrix<- execute(h,'cc[;0h;flip 2 2#1 2 3 4]',int64Matrix)
   expect_equal(int64Matrix,c(okType=TRUE,okValue=TRUE))
-  
+  #intMatrix<-as.integer(0:11)
+  #dim(intMatrix)<-c(2,2,3)
+  #intMatrix<- execute(h,'cc[;0h;2 2 3#`int$til 12]',intMatrix)
+  #expect_equal(intMatrix,c(okType=TRUE,okValue=TRUE))
 })
