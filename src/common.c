@@ -267,10 +267,10 @@ static SEXP from_short_kobject(K x) {
 
 static SEXP from_int_kobject(K x) {
   SEXP result;
-  if(scalar(x)) return ScalarInteger(x->i==ni?NA_INTEGER:x->i);
+  if(scalar(x)) return ScalarInteger(x->i);
   PROTECT(result= allocVector(INTSXP,x->n));
   for(J i= 0; i < x->n; i++)
-    INTEGER(result)[i]= kI(x)[i]==ni?NA_INTEGER:kI(x)[i];
+    INTEGER(result)[i]= kI(x)[i];
   UNPROTECT(1);
   return result;
 }
@@ -349,28 +349,36 @@ static SEXP from_month_kobject(K object) {
   }
 
 static SEXP from_date_kobject(K x) {
-  SEXP result=from_int_kobject(x);
+  SEXP result=PROTECT(from_int_kobject(x));
   for(J i= 0; i < XLENGTH(result); i++)
     if(INTEGER(result)[i]!=NA_INTEGER) INTEGER(result)[i]+=10957;
-  return setdateclass(result);
+  setdateclass(result);
+  UNPROTECT(1);
+  return result;
 }
 
 static SEXP from_datetime_kobject(K x) {
-  SEXP result=from_double_kobject(x);
+  SEXP result=PROTECT(from_double_kobject(x));
   for(J i= 0; i < XLENGTH(result); i++)
     REAL(result)[i]= REAL(result)[i]*86400. + 10957.* 86400.;
   setdatetimeclass(result);
   settimezone(result,"GMT");
+  UNPROTECT(1);
   return result;
 }
 
 static SEXP from_minute_kobject(K object) { 
-  return setdifftimeclass(from_int_kobject(object),"mins"); 
+  SEXP result=PROTECT(from_int_kobject(object));
+  result = setdifftimeclass(result,"mins");
+  UNPROTECT(1); 
+  return result; 
   }
 
 static SEXP from_second_kobject(K object) { 
-  return setdifftimeclass(from_int_kobject(object),"secs"); 
-  }
+  SEXP result=PROTECT(from_int_kobject(object));
+  result = setdifftimeclass(result,"secs");
+  UNPROTECT(1); 
+  return result;   }
 
 static SEXP from_time_kobject(K object) { 
   SEXP raw= from_int_kobject(object);
@@ -394,9 +402,12 @@ static SEXP from_timespan_kobject(K x) {
 static SEXP from_timestamp_kobject(K x) {
   SEXP result=from_long_kobject(x);
   J i,n=XLENGTH(result);
+  PROTECT(result);
   for(i= 0; i < n; i++)
       if(INT64(result)[i]!=nj)INT64(result)[i]+=epoch_offset;
-  return nanotimeAttrSet(result);
+  result = nanotimeAttrSet(result);
+  UNPROTECT(1);
+  return result;
 }
 
 static SEXP from_dictionary_kobject(K x) {
