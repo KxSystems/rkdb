@@ -1,5 +1,6 @@
 OSFLAG :=
 MS :=
+
 ifeq ($(OS),Windows_NT)
   OSFLAG = w
   ifeq "$(WIN)" "64"
@@ -15,6 +16,9 @@ else
   ifeq ($(UNAME_S),Darwin)
     OSFLAG = m
   endif
+  ifeq ($(UNAME_S),MSYS_NT-6.3-WOW)
+  	OSFLAG = w
+  endif
   SUB_UNAME := $(findstring MINGW32, $(UNAME_S))
   $(info UNAME_S="$(UNAME_S)")
   ifeq ($(SUB_UNAME), MINGW32)
@@ -25,8 +29,9 @@ endif
 QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
-PKG_LIBS=$(addsuffix /c.o,$(QARCH))
 ifeq ($(OSFLAG),w)
-PKG_LIBS += -lws2_32
+PKG_LIBS=-L$(QARCH) -lest_static -lws2_32
+else
+PKG_LIBS=$(addsuffix /e.o,$(QARCH))
 endif
 OBJECTS=rkdb.o

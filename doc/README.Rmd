@@ -3,7 +3,7 @@ title: "RKDB README"
 author: 
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
 params:
   server: localhost
   port: 5000
@@ -50,15 +50,15 @@ library(rkdb)
 ```
 
 # First steps
-## Open a q server and connect to it
-Open a qserver to test the installation
+## Setting up a connection
+Start kdb+ process to test the installation
 ```{r start kdb, echo=TRUE, eval=FALSE}
 q -p params$port
 ```
 
 Open a connection to it
 ```{r open connection, echo=TRUE}
-h <- open_connection(params$server,params$port) #this opens a connection
+h <- open_connection(params$server,params$port)
 ```
 
 ## Hello kdb
@@ -70,36 +70,35 @@ execute(h, '1+1')
 
 Assigning a variable in q workspace also works:
 ```{r abc 2, echo=TRUE}
-execute(h, 'x:1+1') #assign x hopefully to 2
+execute(h, 'x:1+1') #assign x to 2
 execute(h, 'x') # get back the value
 ```
 
 # Getting data from kdb to R
 
-As per [Q for mortals](http://code.kx.com/q4m3/2_Basic_Data_Types_Atoms/) kdb uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation.
-The conversions (from kdb to R, at time of writing) are: 
+kdb+ uses some basic types that might not have a direct equivalent in R. Note also that this is not a bijective operation. The conversions (from kdb to R) are: 
 
 ```{r atoms 0, echo=FALSE, warning=FALSE, message=FALSE, results='asis'}
 cat("
 | kdb/q                       | r            |
 |-----------------------------|--------------|
 | boolean                     | logical      |
-| byte                        | integer      |
+| byte                        | raw          |
 | short                       | integer      |
 | int                         | integer      |
-| long                        | numeric      |
+| long                        | integer64    |
 | real                        | numeric      |
 | float                       | numeric      |
 | char                        | character    |
 | symbol                      | character    |
-| timestamp                   | POSIXct      |
+| timestamp                   | nanotime     |
 | month                       | integer      |
 | date                        | Date         |
 | datetime                    | POSIXct      |
-| timespan                    | character    |
+| timespan                    | integer64    |
 | minute                      | difftime     |
 | second                      | difftime     |
-| time                        | difftime     |
+| time                        | integer      |
 | enumeration                 | character    |
 | table                       | data.frame   |
 | keyed table                 | data.frame   |
