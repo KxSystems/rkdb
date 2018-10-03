@@ -17,3 +17,5 @@ BugReports: https://github.com/KxSystems/rkdb/issues
 MailingList: personal-kpdbplus@googlegroups.com
 SystemRequirements: GNU make
 RoxygenNote: 6.1.0
+Encoding: UTF-8
+Biarch: FALSE
