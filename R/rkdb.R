@@ -50,3 +50,25 @@ execute <- function(connection, query, ...) {
 close_connection <- function(con) {
 	.Call("kx_r_close_connection", as.integer(con))
 }
+
+#' Version of c api this library is linked to.
+#'
+#' @return integer in a format yyyymmdd.
+#' @export
+#' @examples
+#' version()
+version <- function() {
+  .Call("kx_ver")
+}
+
+#' Show information about openssl configuration found on the system to use for secure connections.
+#'
+#' @return dictionary with information about ssl.
+#' @export
+#' @examples
+#' \dontrun{
+#' sslinfo()
+#' }
+sslinfo <-function(){
+  .Call("kx_sslinfo")
+}

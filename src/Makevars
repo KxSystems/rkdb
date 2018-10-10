@@ -30,7 +30,7 @@ QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
 ifeq ($(OSFLAG),w)
-PKG_LIBS=-L$(QARCH) -lest_static -lws2_32
+PKG_LIBS=-L$(QARCH) -le_static -lws2_32 -liphlpapi
 else
 PKG_LIBS=$(addsuffix /e.o,$(QARCH))
 endif
