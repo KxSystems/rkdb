@@ -24,6 +24,9 @@ Handle to kdb+ instance for \code{execute} and \code{close_connection}.
 \description{
 Connect to kdb+ instance.
 }
+\details{
+If connection failed and tls enabled, error details can be inspected via \code{sslinfo}
+}
 \examples{
 \dontrun{
 h<-open_connection()

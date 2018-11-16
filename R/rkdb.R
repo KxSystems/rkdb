@@ -6,6 +6,7 @@
 #' @param timeout Number of milliseconds to wait for connection
 #' @param tls Whether or not to use secure connection.
 #' @return Handle to kdb+ instance for \code{execute} and \code{close_connection}.
+#' @details If connection failed and tls enabled, error details can be inspected via \code{sslinfo}
 #' @export
 #' @examples
 #' \dontrun{
