@@ -33,6 +33,21 @@ EXPORT SEXP kx_r_open_connection(SEXP);
 EXPORT SEXP kx_r_close_connection(SEXP);
 EXPORT SEXP kx_r_execute(SEXP c, SEXP, SEXP);
 
+EXPORT SEXP kx_ver(){
+  return ScalarInteger(ver());
+}
+
+EXPORT SEXP kx_sslinfo(){
+  SEXP s;
+  K r=ee(sslInfo(NULL));
+  if(r->t==-128){
+    r0(r);
+    error("kdb+ : %s.", r->s);
+  }
+  s= from_any_kobject(r);
+  r0(r);
+  return s;
+}
 /*
  * Open a connection to an existing kdb+ process.
  *
@@ -40,7 +55,6 @@ EXPORT SEXP kx_r_execute(SEXP c, SEXP, SEXP);
  * If we have a host, port, "username:password" we call instead khpu.
  */
 SEXP kx_r_open_connection(SEXP whence) {
-  SEXP result;
   int connection, port, timeout,tls,cap;
   const char *host,*user;
   int length= LENGTH(whence);
@@ -70,25 +84,16 @@ SEXP kx_r_open_connection(SEXP whence) {
     error(strerror(errno));
 #endif
   }
-  PROTECT(result= allocVector(INTSXP,1));
-  INTEGER(result)[0]= connection;
-  UNPROTECT(1);
-  return result;
+  return ScalarInteger(connection);
 }
 
 /*
  * Close a connection to an existing kdb+ process.
  */
 SEXP kx_r_close_connection(SEXP connection) {
-  SEXP result;
-
   /* Close the connection. */
   kclose(asInteger(connection));
-
-  PROTECT(result= allocVector(INTSXP,1));
-  INTEGER(result)[0]= 0;
-  UNPROTECT(1);
-  return result;
+  return ScalarInteger(0);
 }
 
 /*
@@ -134,10 +139,13 @@ static const R_CallMethodDef callMethods[]= {
   { "kx_r_open_connection", (DL_FUNC) &kx_r_open_connection, -1 },
   { "kx_r_close_connection", (DL_FUNC) &kx_r_close_connection, -1 },
   { "kx_r_execute", (DL_FUNC) &kx_r_execute, -1 },
+  { "kx_ver", (DL_FUNC) &kx_ver, -1},
+  { "kx_sslinfo", (DL_FUNC) &kx_sslinfo, -1},
   { NULL, NULL, 0 }
 };
 
 void R_init_rkdb(DllInfo *info) {
   R_registerRoutines(info, NULL, callMethods, NULL, NULL);
   R_useDynamicSymbols(info, FALSE);
+  khp("",-1);
 }

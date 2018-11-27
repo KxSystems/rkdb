@@ -3,3 +3,6 @@
 ^.clang-format$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^appveyor\.yml$
+^doc$
+^bench*$
