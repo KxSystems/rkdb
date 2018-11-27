@@ -35,6 +35,9 @@ knitr::knit_hooks$set(source = function(x, options) {
 })
 ```
 
+# Requirements
+R 3.3.x and later
+
 # Installation
 ```{r install 1, echo=TRUE, message=FALSE, warning=FALSE}
 # remove old package
