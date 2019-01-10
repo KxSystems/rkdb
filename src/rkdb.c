@@ -125,8 +125,7 @@ SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
   } else if(kx_connection < 0) { // async IPC
     return R_NilValue;
   } else if(-128 == result->t) {
-    char *e= calloc(strlen(result->s) + 1, 1);
-    strcpy(e, result->s);
+    char *e= ss(result->s);
     r0(result);
     error("kdb+ : %s.", e);
   }
