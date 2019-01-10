@@ -73,3 +73,8 @@ version <- function() {
 sslinfo <-function(){
   .Call("kx_sslinfo")
 }
+
+#' @import bit64
+#' @useDynLib rkdb, .registration = TRUE
+NULL
+

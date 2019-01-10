@@ -38,11 +38,11 @@ EXPORT SEXP kx_ver(){
 }
 
 EXPORT SEXP kx_sslinfo(){
-  SEXP s;
+  SEXP s;S e;
   K r=ee(sslInfo(NULL));
   if(r->t==-128){
-    r0(r);
-    error("kdb+ : %s.", r->s);
+    e=r->s;r0(r);
+    error("kdb+ : %s.",e);
   }
   s= from_any_kobject(r);
   r0(r);
@@ -125,8 +125,7 @@ SEXP kx_r_execute(SEXP connection, SEXP query, SEXP args) {
   } else if(kx_connection < 0) { // async IPC
     return R_NilValue;
   } else if(-128 == result->t) {
-    char *e= calloc(strlen(result->s) + 1, 1);
-    strcpy(e, result->s);
+    char *e= ss(result->s);
     r0(result);
     error("kdb+ : %s.", e);
   }
