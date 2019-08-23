@@ -17,6 +17,10 @@ test_that("kdb types to R types", {
   bool <- testKdbToRType(h, '1b')
   expect_is(bool, "logical")
   expect_true(bool)
+
+  guid <- testKdbToRType(h,'"G"$"f988c316-d1ec-6541-ee4c-44af6b5fc747"')
+  expect_is(guid, "character")
+  expect_equal(guid,'f988c316-d1ec-6541-ee4c-44af6b5fc747')
   
   byte <- testKdbToRType(h, '0x26')
   expect_is(byte, "raw")
