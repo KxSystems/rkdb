@@ -249,9 +249,9 @@ static SEXP from_byte_kobject(K x) {
 
 static SEXP from_guid_kobject(K x) {
   K y=ktn(KC,37);
-  y->n=36;
   G*gv=kG(x);
   sprintf(kC(y),"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",gv[ 0],gv[ 1],gv[ 2],gv[ 3],gv[ 4],gv[ 5],gv[ 6],gv[ 7],gv[ 8],gv[ 9],gv[10],gv[11],gv[12],gv[13],gv[14],gv[15]);
+  y->n=36;
   SEXP r= from_any_kobject(y);
   r0(y);
   return r;
