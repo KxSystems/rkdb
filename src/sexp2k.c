@@ -15,6 +15,7 @@ ZK from_symbol_robject(SEXP);
 ZK dictpairlist(SEXP);
 ZK from_closure_robject(SEXP);
 ZK from_language_robject(SEXP);
+ZK from_date_robject(SEXP);
 ZK from_char_robject(SEXP);
 ZK from_logical_robject(SEXP);
 ZK from_integer_robject(SEXP);
@@ -44,6 +45,9 @@ ZK from_any_robject(SEXP sxp) {
   }
   if(isClass("factor", sxp)) {
     return from_factor_robject(sxp);
+  }
+  if(isClass("Date", sxp)){
+    return from_date_robject(sxp);
   }
   K result= 0;
   int type= TYPEOF(sxp);
@@ -167,6 +171,14 @@ ZK from_raw_robject(SEXP sxp) {
   G*r=RAW(sxp);
   DO(xn, kG(x)[i]= r[i])
   return x;
+}
+
+ZK from_date_robject(SEXP sxp) {
+ K x;
+ J length= XLENGTH(sxp);
+ x= ktn(KD,length);
+ DO(length,kI(x)[i]=(I)REAL(sxp)[i]-10957)
+ return x;
 }
 
 // NULL in R(R_NilValue): often used as generic zero length vector
