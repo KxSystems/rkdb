@@ -17,9 +17,9 @@ if('qserver' %in% rownames(installed.packages())) remove.packages('qserver')
 if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools')
 library(devtools)
 # install rkdb
-devtools::install_github('kxsystems/rkdb', quiet=TRUE)
+devtools::install_github('kxsystems/rkdb', quiet=TRUE,INSTALL_opts=c("--no-multiarch"))
 # to install rkdb of particular release
-# devtools::install_github('kxsystems/rkdb@0.10.0', quiet=TRUE)
+# devtools::install_github('kxsystems/rkdb@v0.10.0', quiet=TRUE)
 library(rkdb)
 ```
 
