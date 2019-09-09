@@ -143,7 +143,7 @@ test_that("kdb types to R types", {
                              as.integer64(c(4,4,5,5)),
                              c(1,1,1,3,4,5)))
   
-  nulllist <-testKdbToRType(h,'first each upper[.Q.t except \" bgxcs\"]$\\:()')
+  nulllist <-testKdbToRType(h,'first each upper[.Q.t except \" bgxcjnps\"]$\\:()')
   expect_true(all(is.na(nulllist)))
 })
 
