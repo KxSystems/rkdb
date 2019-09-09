@@ -86,8 +86,10 @@ test_that("kdb types to R types", {
 
   time <- testKdbToRType(h, '12:00:00.000')
   expect_is(time, "integer")
-  expect_equal(time, as.POSIXct('12:00:00.000',format='%H:%M:%S',tz='UTC'))
-  
+  midnight <- as.POSIXct('00:00:00.000',format='%H:%M:%S',tz='UTC')
+  midday   <- as.POSIXct('12:00:00.000',format='%H:%M:%S',tz='UTC')
+  milli_12hr <- 1000*as.numeric(difftime(midday,midnight,units="sec"))
+  expect_equal(time, milli_12hr)
   
   enumeration <-
     testKdbToRType(h, 'letters:`a`b`c`d; l:`a`b`a`b`d; `letters$l')
