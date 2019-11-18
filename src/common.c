@@ -111,6 +111,11 @@ static SEXP from_dictionary_kobject(K);
 static SEXP from_table_kobject(K);
 
 /*
+ * Function used in the conversion of kdb guid to R char array
+ */
+static K guid_2_char(K);
+
+/*
  * An array of functions that deal with kdbplus data types. Note that the order
  * is very important as we index it based on the kdb+ type number in the K
  * object.
@@ -247,13 +252,21 @@ static SEXP from_byte_kobject(K x) {
   return result;
 }
 
-static SEXP from_guid_kobject(K x) {
-  K y=ktn(KC,37);
-  G*gv=kG(x);
-  sprintf(kC(y),"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",gv[ 0],gv[ 1],gv[ 2],gv[ 3],gv[ 4],gv[ 5],gv[ 6],gv[ 7],gv[ 8],gv[ 9],gv[10],gv[11],gv[12],gv[13],gv[14],gv[15]);
-  y->n=36;
-  SEXP r= from_any_kobject(y);
-  r0(y);
+static SEXP from_guid_kobject(K x){
+  SEXP r;K y,z= ktn(0,x->n);
+  if(scalar(x)){
+    y= guid_2_char(kG(x));
+    r= from_any_kobject(y);
+    r0(y);
+    return r;
+  }
+  for(J i=0;i<x->n;i++){
+    y= guid_2_char((G*)(&kU(x)[i]));
+    kK(z)[i]= kp(kC(y));
+    r0(y);
+  }
+  r = from_any_kobject(z);
+  r0(z);
   return r;
 }
 
@@ -444,4 +457,16 @@ static SEXP from_table_kobject(K x) {
   UNPROTECT(2);
   make_data_frame(result);
   return result;
+}
+
+/*
+ * Util function
+ */
+
+static K guid_2_char(K x){
+    K y= ktn(KC,37);
+    G*gv= x;
+    sprintf(kC(y),"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",gv[ 0],gv[ 1],gv[ 2],gv[ 3],gv[ 4],gv[ 5],gv[ 6],gv[ 7],gv[ 8],gv[ 9],gv[10],gv[11],gv[12],gv[13],gv[14],gv[15]);
+    y->n= 36;
+    return(y);
 }
