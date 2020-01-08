@@ -1,5 +1,6 @@
 # R client for kdb+
 
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/kxsystems/rkdb)](https://github.com/kxsystems/rkdb/releases) [![Travis (.org) branch](https://img.shields.io/travis/kxsystems/rkdb/master?label=travis%20build)](https://travis-ci.org/kxsystems/rkdb/branches) [![AppVeyor branch](https://img.shields.io/appveyor/ci/sv/rkdb/master?label=appveyor%20build)](https://ci.appveyor.com/project/sv/rkdb/branch/master)
 
 
 Execute kdb+ queries from R for advanced high-performance
