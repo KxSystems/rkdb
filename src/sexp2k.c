@@ -174,11 +174,18 @@ ZK from_raw_robject(SEXP sxp) {
 }
 
 ZK from_date_robject(SEXP sxp) {
- K x;
- J length= XLENGTH(sxp);
- x= ktn(KD,length);
- DO(length,kI(x)[i]=(I)REAL(sxp)[i]-10957)
- return x;
+  K x;
+  J length= XLENGTH(sxp);
+  x= ktn(KD,length);
+  int type= TYPEOF(sxp);
+  switch(type) {
+    case INTSXP:
+      DO(length,kI(x)[i]=INTEGER(sxp)[i]-10957);
+      break;
+    default:
+      DO(length,kI(x)[i]=(I)REAL(sxp)[i]-10957);
+  }
+  return x;
 }
 
 // NULL in R(R_NilValue): often used as generic zero length vector
