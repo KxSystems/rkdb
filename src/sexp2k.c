@@ -30,13 +30,6 @@ ZK from_nyi_robject(SEXP);
 ZK from_frame_robject(SEXP);
 ZK from_factor_robject(SEXP);
 
-// Offsets used in conversion between R and q
-// Seconds in a day
-const int sec2day = 86400;
-// Days+Seconds between 1970.01.01 & 2000.01.01
-const int kdbDateOffset = 10957;
-const int kdbSecOffset  = 946684800;
-
 Rboolean isClass(const char *class_, SEXP s) {
   SEXP klass;
   int i;

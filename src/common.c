@@ -366,7 +366,7 @@ static SEXP from_month_kobject(K object) {
 static SEXP from_date_kobject(K x) {
   SEXP result=PROTECT(from_int_kobject(x));
   for(J i= 0; i < XLENGTH(result); i++)
-    if(INTEGER(result)[i]!=NA_INTEGER) INTEGER(result)[i]+=10957;
+    if(INTEGER(result)[i]!=NA_INTEGER) INTEGER(result)[i]+=kdbDateOffset;
   setdateclass(result);
   UNPROTECT(1);
   return result;
@@ -375,7 +375,8 @@ static SEXP from_date_kobject(K x) {
 static SEXP from_datetime_kobject(K x) {
   SEXP result=PROTECT(from_double_kobject(x));
   for(J i= 0; i < XLENGTH(result); i++)
-    REAL(result)[i]= REAL(result)[i]*86400. + 10957.* 86400.;
+    REAL(result)[i]= REAL(result)[i]* sec2day + kdbDateOffset*sec2day;
+    //REAL(result)[i]= REAL(result)[i]*86400. + 10957.* 86400.;
   setdatetimeclass(result);
   settimezone(result,"GMT");
   UNPROTECT(1);

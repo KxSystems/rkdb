@@ -14,7 +14,13 @@
 #define KXVER 3
 #include "k.h"
 #define INT64(x)   ((J*) REAL(x))
+// Offsets used in conversion between R and q
 static J epoch_offset=10957*24*60*60*1000000000LL;
+// Seconds in a day
+static int sec2day = 86400;
+// Days+Seconds between 1970.01.01 & 2000.01.01
+static int kdbDateOffset = 10957;
+static int kdbSecOffset  = 946684800;
 
 #include "sexp2k.c"
 #include "common.c"
