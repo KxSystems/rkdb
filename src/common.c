@@ -30,7 +30,7 @@ static SEXP setdatetimeclass(SEXP sxp) {
   return sxp;
 }
 
-static SEXP nanotimeAttrSet(SEXP sxp) {
+static SEXP settimestampclass(SEXP sxp) {
   SEXP classValue;
   SEXP tag = PROTECT(mkString(".S3Class"));
   SEXP val = PROTECT(mkString("integer64"));
@@ -384,16 +384,17 @@ static SEXP from_datetime_kobject(K x) {
 
 static SEXP from_minute_kobject(K object) { 
   SEXP result=PROTECT(from_int_kobject(object));
-  result = setdifftimeclass(result,"mins");
+  setdifftimeclass(result,"mins");
   UNPROTECT(1); 
   return result; 
   }
 
 static SEXP from_second_kobject(K object) { 
   SEXP result=PROTECT(from_int_kobject(object));
-  result = setdifftimeclass(result,"secs");
+  setdifftimeclass(result,"secs");
   UNPROTECT(1); 
-  return result;   }
+  return result;
+  }
 
 static SEXP from_time_kobject(K object) { 
   SEXP raw= from_int_kobject(object);
@@ -420,7 +421,7 @@ static SEXP from_timestamp_kobject(K x) {
   PROTECT(result);
   for(i= 0; i < n; i++)
       if(INT64(result)[i]!=nj)INT64(result)[i]+=epoch_offset;
-  result = nanotimeAttrSet(result);
+  settimestampclass(result);
   UNPROTECT(1);
   return result;
 }
