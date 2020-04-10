@@ -12,7 +12,7 @@ ZK from_any_robject(SEXP sxp);
 ZK from_any_robject(SEXP);
 ZK from_null_robject(SEXP);
 ZK from_symbol_robject(SEXP);
-ZK dictpairlist(SEXP);
+ZK from_pairlist_robject(SEXP);
 ZK from_closure_robject(SEXP);
 ZK from_language_robject(SEXP);
 ZK from_date_robject(SEXP);
@@ -72,7 +72,7 @@ ZK from_any_robject(SEXP sxp) {
     return from_symbol_robject(sxp);
     break; /* symbols */
   case LISTSXP:
-    return dictpairlist(sxp);
+    return from_pairlist_robject(sxp);
     break; /* lists of dotted pairs */
   case CLOSXP:
     return from_closure_robject(sxp);
@@ -122,7 +122,7 @@ ZK from_any_robject(SEXP sxp) {
   return result;
 }
 
-ZK dictpairlist(SEXP sxp) {
+ZK from_pairlist_robject(SEXP sxp) {
   K k= knk(0);
   K v= knk(0);
   SEXP s= sxp;
@@ -137,7 +137,7 @@ ZK dictpairlist(SEXP sxp) {
 /* add attribute */
 ZK addattR(K x, SEXP att) {
   // attrs are pairlists: LISTSXP
-  K u= dictpairlist(att);
+  K u= from_pairlist_robject(att);
   return knk(2, u, x);
 }
 
