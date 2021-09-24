@@ -152,7 +152,7 @@ test_that("kdb types to R types", {
 # test R -> kdb
 test_that("R types to kdb types", {
   h <- skip_unless_has_test_db()
-  remoteCheckFunc <- '`cc set {show"type is ",string type x;`tmp set x;`okType`okValue!(type[x]~y;x~z)}'
+  remoteCheckFunc <- '`cc set {show"type is ",string[type x], " : ",-3!x;`tmp set x;`okType`okValue!(type[x]~y;x~z)}'
   execute(h, remoteCheckFunc)
   int <- execute(h, 'cc[;6h;(),1i]', 1L)   # R doesn't have scalars
   expect_equal(int, c(okType = TRUE, okValue = TRUE))
@@ -169,6 +169,14 @@ test_that("R types to kdb types", {
   expect_equal(date, c(okType = TRUE, okValue = TRUE))
   dateV <- execute(h, 'cc[;14h;(1995.08.09;1759.01.01)]',as.Date(c("1995-08-09","1759-01-01")))
   expect_equal(dateV, c(okType = TRUE, okValue = TRUE))
+  datetimect <- execute(h, 'cc[;15h;(),2018.02.18T04:00:01.000z]', c(as.POSIXct("2018-02-18 04:00:01", format="%Y-%m-%d %H:%M:%S", tz='UTC')))
+  expect_equal(datetimect, c(okType = TRUE, okValue = TRUE))
+  datetimelt <- execute(h, 'cc[;15h;(),2018.02.18T04:00:01.000z]', c(as.POSIXlt("2018-02-18 04:00:01", format="%Y-%m-%d %H:%M:%S", tz='UTC')))
+  expect_equal(datetimelt, c(okType = TRUE, okValue = TRUE))
+  datetimectV <- execute(h, 'cc[;15h;(2015.03.16T17:30:00.000z; 1978.06.01T12:30:59.000z)]', c(as.POSIXct("2015-03-16 17:30:00", format="%Y-%m-%d %H:%M:%S", tz='UTC'), as.POSIXct("1978-06-01 12:30:59", format="%Y-%m-%d %H:%M:%S", tz='UTC')))
+  expect_equal(datetimectV, c(okType = TRUE, okValue = TRUE))
+  datetimeltV <- execute(h, 'cc[;15h;(2015.03.16T17:30:00.000z; 1978.06.01T12:30:59.000z)]', c(as.POSIXlt("2015-03-16 17:30:00", format="%Y-%m-%d %H:%M:%S", tz='UTC'), as.POSIXlt("1978-06-01 12:30:59", format="%Y-%m-%d %H:%M:%S", tz='UTC')))
+  expect_equal(datetimeltV, c(okType = TRUE, okValue = TRUE))
   unamedL <- execute(h, 'cc[;0h;((),1.;(),2.)]', list(1., 2.))
   expect_equal(unamedL, c(okType = TRUE, okValue = TRUE))
   unamedL2 <- execute(h, 'cc[;0h;((),1.;(),"2")]', list(1., "2"))
