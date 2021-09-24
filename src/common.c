@@ -63,15 +63,6 @@ static SEXP setdifftimeclass(SEXP sxp, char* units) {
   return sxp;
 }
 
-/* for setting timezone */
-static SEXP settimezone(SEXP sxp, char* tzone) {
-  SEXP timezone= PROTECT(allocVector(STRSXP, 1));
-  SET_STRING_ELT(timezone, 0, mkChar(tzone));
-  if (R_TzSymbol == NULL) R_TzSymbol = install("tzone");
-  setAttrib(sxp, R_TzSymbol, timezone);
-  UNPROTECT(1);
-  return sxp;
-}
 /* for date,month */
 static SEXP setdateclass(SEXP sxp) {
   SEXP difftimeclass= PROTECT(allocVector(STRSXP, 1));
@@ -377,7 +368,6 @@ static SEXP from_datetime_kobject(K x) {
   for(J i= 0; i < XLENGTH(result); i++)
     REAL(result)[i]= REAL(result)[i]*86400. + 10957.* 86400.;
   setdatetimeclass(result);
-  settimezone(result,"GMT");
   UNPROTECT(1);
   return result;
 }
