@@ -1,8 +1,12 @@
 OSFLAG :=
 MS :=
+QLIB :=
+QLIBS :=
 
 ifeq ($(OS),Windows_NT)
   OSFLAG = w
+  QLIB = e_static
+  QLIBS = .lib
   ifeq "$(WIN)" "64"
     MS = 64
   else
@@ -24,14 +28,22 @@ else
   ifeq ($(SUB_UNAME), MINGW32)
     OSFLAG = w
   endif
-  MS=$(shell getconf LONG_BIT)  # 32/64
+  MS=$(shell getconf LONG_BIT)
+  QLIB=e
+  QLIBS=.o
 endif
 QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
 ifeq ($(OSFLAG),w)
-PKG_LIBS=-L$(QARCH) -le_static -lws2_32 -liphlpapi
+PKG_LIBS=-L. -l$(QLIB) -lws2_32 -liphlpapi
 else
-PKG_LIBS=$(addsuffix /e.o,$(QARCH))
+PKG_LIBS=$(QLIB)$(QLIBS)
 endif
 OBJECTS=rkdb.o
+.PHONY: all lib k.h
+all: k.h lib
+lib:
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/$(QLIB)$(QLIBS)
+k.h:
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/c/c/k.h
