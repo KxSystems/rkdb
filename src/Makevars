@@ -42,8 +42,11 @@ PKG_LIBS=$(QLIB)$(QLIBS)
 endif
 OBJECTS=rkdb.o
 .PHONY: all lib k.h
-all: k.h lib
-lib:
-	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/$(QLIB)$(QLIBS)
+all: k.h $(QLIB)$(QLIBS)
+est.lib:
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/est.lib
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/est.dll
+e.o:
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/e.o
 k.h:
 	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/c/c/k.h

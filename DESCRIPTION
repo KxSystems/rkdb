@@ -1,12 +1,9 @@
 Package: rkdb
-Version: 0.12.0
+Version: 0.13.0
 Title: R Client for 'kdb+'
 Description: A 'kdb+' driver and interface for R. Connect and execute queries against 'kdb+' database and analytics platform from 'Kx Systems'(<https://kx.com>).
 Authors@R: c(
-  person("Sergey","Vidyuk", role=c("aut","cre"), email="svidyuk@gmail.com"),
-  person("Chris","Burke", role=c("ctb")),
-  person("Niall","Dalton",role=c("ctb")),
-  person("Rory","Winston",role=c("ctb"))
+  person("Kx","Systems", role=c("aut","cre"), email="fusion@kx.com")
   )
 Depends: R (>= 3.0.0)
 Imports: bit64, nanotime (>= 0.2.0)
