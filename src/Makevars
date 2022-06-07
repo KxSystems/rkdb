@@ -5,7 +5,7 @@ QLIBS :=
 
 ifeq ($(OS),Windows_NT)
   OSFLAG = w
-  QLIB = e_static
+  QLIB = e
   QLIBS = .lib
   ifeq "$(WIN)" "64"
     MS = 64
@@ -50,3 +50,6 @@ e.o:
 	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/e.o
 k.h:
 	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/c/c/k.h
+e.lib:
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/e.lib
+	curl -O -J -L https://github.com/KxSystems/kdb/raw/master/$(QARCH)/e.dll
