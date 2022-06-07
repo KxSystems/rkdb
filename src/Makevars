@@ -5,7 +5,7 @@ QLIBS :=
 
 ifeq ($(OS),Windows_NT)
   OSFLAG = w
-  QLIB = e_static
+  QLIB = est
   QLIBS = .lib
   ifeq "$(WIN)" "64"
     MS = 64
