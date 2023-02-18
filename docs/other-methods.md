@@ -29,7 +29,7 @@ The RODBC package should be installed in R. An example is given below.
 
 R contains a maths library which can be compiled standalone.
 The functions can then be exposed to q by wrapping them in C code which handles the mapping between R datatypes and q datatypes (K objects).
-See :fontawesome-brands-github: [rwinston/kdb-rmathlib](https://github.com/rwinston/kdb-rmathlib)
+See [rwinston/kdb-rmathlib](https://github.com/rwinston/kdb-rmathlib)
 for an example of integrating q with the R API (i.e. making use of some statistical functions from q).
 
 ```q
