@@ -1,35 +1,33 @@
----
-title: rkdb an interface giving R access to q/kdb+
-description: Enable R to connect to kdb+ and extract data; enable q to connect to a remote instance of R via TCP/IP and invoke R routines remotely.
-keywords: interface, kdb+, library, q, r
----
-# :fontawesome-brands-r-project: rkdb 
+# rkdb 
 
-:fontawesome-brands-superpowers: [Fusion for kdb+](../fusion.md)
-{: .fusion}
+A KX [Fusion interface](https://code.kx.com/q/interfaces#fusion)
 
 Connects R to a kdb+ database to extract partially analyzed data into R
 for further local manipulation, analysis and display.
 
+*    [Using R with kdb+](r-and-q.md)
+*   [Other methods](other-methods.md)
+
 Operating systems: tested and available for
 
--   :fontawesome-brands-linux: Linux (64-bit)
--   :fontawesome-brands-apple: macOS
--   :fontawesome-brands-windows: Windows (32-bit and 64-bit)
-
-Download from :fontawesome-brands-github: [KxSystems/rkdb](https://github.com/KxSystems/rkdb) and follow the [installation instructions](https://github.com/KxSystems/rkdb#installation).
+-   Linux (64-bit)
+-   macOS
+-   Windows (32-bit and 64-bit)
 
 The interface allows R to connect to a kdb+ database and send it a request, which can optionally return a result.
 Three methods are available:
 
-`open_connection(hostname, port, username:password)`
-: Open a connection to a q database. Multiple connections can be open at once
+1.  `open_connection(hostname, port, username:password)`
 
-`close_connection(connectionhandle)`
-: Close a connection
+    Open a connection to a q database. Multiple connections can be open at once.
 
-`execute(connectionhandle, request)`
-: Execute a request on the specified connection handle. Where `connectionhandle` is:
+2.  `close_connection(connectionhandle)`
+
+    Close a connection.
+
+3.  `execute(connectionhandle, request)`
+
+    Execute a request on the specified connection handle. Where `connectionhandle` is:
 
     -   &gt;0, executes the request synchronously, blocking the call
     -   &lt;0, executes the request asynchronously; the result may arrive later
@@ -67,7 +65,7 @@ head(res)
 
 which produces the plot in Figure 1:
 
-![Last-traded price plot drawn from R](../../img/r/figure1.svg)
+![Last-traded price plot drawn from R](img/r/figure1.svg)
 _Figure 1: Last-traded price plot drawn from R_
 
 More comprehensive graphing is available in additional R packages, which can be freely downloaded.
@@ -89,7 +87,7 @@ For example, using the [xts](http://r-forge.r-project.org/projects/xts) package:
 
 produces the plot in Figure 2:
 
-![Candlestick plot using xts package](../../img/r/figure2.png)
+![Candlestick plot using xts package](img/r/figure2.png)
 _Figure 2: Candlestick plot using xts package_
 
 Another popular package is the [quantmod](http://www.quantmod.com) package which contains the `chartSeries` function.
@@ -107,7 +105,7 @@ Another popular package is the [quantmod](http://www.quantmod.com) package which
 
 This produces the plot shown in Figure 3:
 
-![Chart example from quantmod package](../../img/r/figure3.svg)
+![Chart example from quantmod package](img/r/figure3.svg)
 _Figure 3: Chart example from quantmod package_
 
 Close the connection when done: ￼

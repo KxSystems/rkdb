@@ -6,11 +6,12 @@
 Execute kdb+ queries from R for advanced high-performance
 analytics.
 
+A KX [Fusion interface](https://code.kx.com/q/interfaces#fusion)
 
 
 ## Installation
 
-``` r
+```r
 # remove old package
 if('qserver' %in% rownames(installed.packages())) remove.packages('qserver')
 # install devtools
@@ -171,5 +172,12 @@ execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
     ## 3 y 3 20
     ## 4 y 4 20
 ```
-:point_right:
+
+## :open_file_folder: Documentation
+
+*   [User guide](docs/README.md)
+*   [Using R with kdb+](r-and-q.md)
+*   [Other methods](other-methods.md)
+
+---
 See [code.kx.com/q/interfaces](https://code.kx.com/q/interfaces) for other interfaces to and from kdb+.
