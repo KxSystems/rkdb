@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 
 Execute kdb+ queries from R for advanced high-performance analytics.
 
-## See [Interfacing with R](http://code.kx.com/q/interfaces/with-r/) on Kx wiki.
 
 ```{r hooks, include=FALSE}
 # add stringr
@@ -154,4 +153,5 @@ DF2 <- data.frame(x=c('x','y','z'), z=seq(10,30,10))
 execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
 ```
 
-
+:point_right:
+See [code.kx.com/q/interfaces](https://code.kx.com/q/interfaces) for other interfaces to and from kdb+.

@@ -6,7 +6,6 @@
 Execute kdb+ queries from R for advanced high-performance
 analytics.
 
-See [Interfacing with R](https://code.kx.com/v2/interfaces/with-r/) on code.kx.com.
 
 
 ## Installation
@@ -172,3 +171,5 @@ execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
     ## 3 y 3 20
     ## 4 y 4 20
 ```
+:point_right:
+See [code.kx.com/q/interfaces](https://code.kx.com/q/interfaces) for other interfaces to and from kdb+.
