@@ -176,8 +176,8 @@ execute(h, "{[x;y] x lj `x xkey y}", DF1, DF2)
 ## :open_file_folder: Documentation
 
 *   [User guide](docs/README.md)
-*   [Using R with kdb+](r-and-q.md)
-*   [Other methods](other-methods.md)
+*   [Using R with kdb+](docs/r-and-q.md)
+*   [Other methods](docs/other-methods.md)
 
 ---
 See [code.kx.com/q/interfaces](https://code.kx.com/q/interfaces) for other interfaces to and from kdb+.

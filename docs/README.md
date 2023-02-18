@@ -65,7 +65,7 @@ head(res)
 
 which produces the plot in Figure 1:
 
-![Last-traded price plot drawn from R](img/figure1.svg)
+![Last-traded price plot drawn from R](img/figure1.svg)<br>
 _Figure 1: Last-traded price plot drawn from R_
 
 More comprehensive graphing is available in additional R packages, which can be freely downloaded.
@@ -87,7 +87,7 @@ For example, using the [xts](http://r-forge.r-project.org/projects/xts) package:
 
 produces the plot in Figure 2:
 
-![Candlestick plot using xts package](img/figure2.png)
+![Candlestick plot using xts package](img/figure2.png)<br>
 _Figure 2: Candlestick plot using xts package_
 
 Another popular package is the [quantmod](http://www.quantmod.com) package which contains the `chartSeries` function.
@@ -105,7 +105,7 @@ Another popular package is the [quantmod](http://www.quantmod.com) package which
 
 This produces the plot shown in Figure 3:
 
-![Chart example from quantmod package](img/figure3.svg)
+![Chart example from quantmod package](img/figure3.svg)<br>
 _Figure 3: Chart example from quantmod package_
 
 Close the connection when done: ￼
