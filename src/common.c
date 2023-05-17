@@ -113,7 +113,7 @@ static SEXP from_table_kobject(K);
 /*
  * Function used in the conversion of kdb guid to R char array
  */
-static K guid_2_char(K);
+static K guid_2_char(G*);
 
 /*
  * An array of functions that deal with kdbplus data types. Note that the order
@@ -253,20 +253,16 @@ static SEXP from_byte_kobject(K x) {
 }
 
 static SEXP from_guid_kobject(K x){
-  SEXP r;K y,z= ktn(0,x->n);
+  SEXP r;K y;
   if(scalar(x)){
-    y= guid_2_char(kG(x));
-    r= from_any_kobject(y);
-    r0(y);
-    return r;
+    y=guid_2_char(kG(x));
   }
-  for(J i=0;i<x->n;i++){
-    y= guid_2_char((G*)(&kU(x)[i]));
-    kK(z)[i]= kp(kC(y));
-    r0(y);
+  else{
+    y=ktn(0,xn);
+    DO(xn,kK(y)[i]=guid_2_char((G*)(kU(x)+i)));
   }
-  r = from_any_kobject(z);
-  r0(z);
+  r=from_any_kobject(y);
+  r0(y);
   return r;
 }
 
@@ -463,9 +459,8 @@ static SEXP from_table_kobject(K x) {
  * Util function
  */
 
-static K guid_2_char(K x){
+static K guid_2_char(G*gv){
     K y= ktn(KC,37);
-    G*gv= x;
     sprintf(kC(y),"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",gv[ 0],gv[ 1],gv[ 2],gv[ 3],gv[ 4],gv[ 5],gv[ 6],gv[ 7],gv[ 8],gv[ 9],gv[10],gv[11],gv[12],gv[13],gv[14],gv[15]);
     y->n= 36;
     return(y);
