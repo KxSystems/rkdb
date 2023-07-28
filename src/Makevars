@@ -36,7 +36,7 @@ QARCH=$(OSFLAG)$(MS)
 
 PKG_CFLAGS=-D_GNU_SOURCE
 ifeq ($(OSFLAG),w)
-PKG_LIBS=-L. -l$(QLIB) -lws2_32 -liphlpapi
+PKG_LIBS=-L. $(QLIB).dll -lws2_32 -liphlpapi
 else
 PKG_LIBS=$(QLIB)$(QLIBS)
 endif
