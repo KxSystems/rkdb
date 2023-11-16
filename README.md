@@ -13,7 +13,7 @@ See [Interfacing with R](https://code.kx.com/v2/interfaces/with-r/) on code.kx.c
 
 ``` r
 # remove old package
-if('qserver' %in% rownames(installed.packages())) remove.packages('qserver')
+if('rkdb' %in% rownames(installed.packages())) remove.packages('rkdb')
 # install devtools
 if(! 'devtools' %in% rownames(installed.packages())) install.packages('devtools')
 library(devtools)
