@@ -1,0 +1,43 @@
+name: linux-build
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Set up pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make
+
+      - name: Install required R packages
+        run: |
+          Rscript -e 'install.packages(c("bit64","nanotime"), repos="https://cloud.r-project.org")'
+
+      - name: Build source package
+        run: |
+          R CMD build .
+
+      - name: Install package from source tarball
+        run: |
+          PKG_TGZ=$(ls -1t rkdb_*.tar.gz | head -n 1)
+          R CMD INSTALL "$PKG_TGZ"
+
+      - name: Smoke test load
+        run: |
+          Rscript -e 'library(rkdb); cat(as.character(packageVersion("rkdb")), "\n")'

@@ -1,0 +1,61 @@
+name: windows-build
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-architecture: x64
+          windows-path-include-rtools: true
+          windows-path-include-mingw: true
+
+      - name: Verify toolchain
+        shell: cmd
+        run: |
+          Rscript -e "sessionInfo()"
+          gcc --version
+
+      - name: Install runtime dependencies
+        shell: cmd
+        run: |
+          Rscript -e "install.packages(c('bit64','nanotime'), repos='https://cloud.r-project.org')"
+
+      - name: Build source package
+        shell: cmd
+        run: |
+          R CMD build .
+
+      - name: Check package
+        shell: cmd
+        env:
+          _R_CHECK_FORCE_SUGGESTS_: false
+        run: |
+          for /f %%f in ('dir /b /o-d rkdb_*.tar.gz') do (
+            set PKG=%%f
+            goto found
+          )
+          :found
+          R CMD check %PKG% --no-manual --no-tests
+
+      - name: Upload check logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-rcheck-logs
+          path: |
+            *.Rcheck\00check.log
+            *.Rcheck\00install.out
+            *.Rcheck\*.Rout
+            *.Rcheck\tests\*
